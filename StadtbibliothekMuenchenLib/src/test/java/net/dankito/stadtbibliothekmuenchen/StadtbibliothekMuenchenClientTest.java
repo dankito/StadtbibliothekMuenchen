@@ -1,7 +1,11 @@
 package net.dankito.stadtbibliothekmuenchen;
 
+import net.dankito.stadtbibliothekmuenchen.model.MediaBorrow;
+import net.dankito.stadtbibliothekmuenchen.model.MediaBorrows;
 import net.dankito.stadtbibliothekmuenchen.util.web.OkHttpWebClient;
+import net.dankito.stadtbibliothekmuenchen.util.web.callbacks.ExtendAllBorrowsCallback;
 import net.dankito.stadtbibliothekmuenchen.util.web.callbacks.LoginCallback;
+import net.dankito.stadtbibliothekmuenchen.util.web.responses.ExtendAllBorrowsResult;
 import net.dankito.stadtbibliothekmuenchen.util.web.responses.LoginResult;
 
 import org.junit.After;
@@ -65,6 +69,39 @@ public class StadtbibliothekMuenchenClientTest {
 
     LoginResult result = resultList.get(0);
     Assert.assertTrue(result.isSuccessful());
+  }
+
+  @Test
+  public void extendAllBorrowsAsync_WithoutLoggingInBefore_Succeeds() throws Exception {
+    final List<ExtendAllBorrowsResult> resultList = new ArrayList<>();
+    final CountDownLatch countDownLatch = new CountDownLatch(1);
+
+    underTest.extendAllBorrowsAndGetBorrowsStateAsync(getTestUserIdentityCardNumber(), getTestUserPassword(), new ExtendAllBorrowsCallback() {
+      @Override
+      public void completed(ExtendAllBorrowsResult result) {
+        resultList.add(result);
+        countDownLatch.countDown();
+      }
+    });
+
+    try { countDownLatch.await(5, TimeUnit.MINUTES); } catch(Exception ignored) { }
+
+    Assert.assertEquals(1, resultList.size());
+
+    ExtendAllBorrowsResult result = resultList.get(0);
+    Assert.assertTrue(result.isSuccessful());
+    Assert.assertNotNull(result.getBorrows());
+
+    MediaBorrows borrows = result.getBorrows();
+    Assert.assertTrue(borrows.getBorrows().size() > 0); // TODO: this cannot always be satisfied (i don't have always borrowed books or other media)
+
+    for(MediaBorrow borrow : borrows.getBorrows()) {
+      Assert.assertTrue(borrow.areNecessaryInformationSet());
+      Assert.assertNotNull(borrow.getTitle());
+      Assert.assertNotNull(borrow.getDueOn());
+      Assert.assertNotNull(borrow.getLibrary());
+      Assert.assertNotNull(borrow.getMediaNumber());
+    }
   }
 
 
