@@ -11,6 +11,8 @@ public class MediaBorrows {
 
   protected List<MediaBorrow> borrows = new ArrayList<>();
 
+  protected BorrowExpirations expirations = null;
+
 
   public boolean addBorrow(MediaBorrow borrow) {
     return borrows.add(borrow);
@@ -18,6 +20,14 @@ public class MediaBorrows {
 
   public List<MediaBorrow> getBorrows() {
     return borrows;
+  }
+
+  public BorrowExpirations getExpirations() {
+    return expirations;
+  }
+
+  public void setExpirations(BorrowExpirations expirations) {
+    this.expirations = expirations;
   }
 
 
