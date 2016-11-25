@@ -9,4 +9,5 @@
     <string name="tab_title_search">Search</string>
 
     <string name="error_title_could_not_get_borrows">Could not get borrows</string>
+    <string name="error_title_could_not_do_simple_search">Searching for %s failed</string>
 </resources>

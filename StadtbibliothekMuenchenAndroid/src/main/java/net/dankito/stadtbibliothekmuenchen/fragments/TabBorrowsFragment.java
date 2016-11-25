@@ -13,6 +13,7 @@ import net.dankito.stadtbibliothekmuenchen.R;
 import net.dankito.stadtbibliothekmuenchen.StadtbibliothekMuenchenClient;
 import net.dankito.stadtbibliothekmuenchen.adapter.BorrowsAdapter;
 import net.dankito.stadtbibliothekmuenchen.model.UserSettings;
+import net.dankito.stadtbibliothekmuenchen.util.AlertHelper;
 import net.dankito.stadtbibliothekmuenchen.util.web.callbacks.ExtendAllBorrowsCallback;
 import net.dankito.stadtbibliothekmuenchen.util.web.responses.ExtendAllBorrowsResult;
 
@@ -67,7 +68,7 @@ public class TabBorrowsFragment extends Fragment {
 
 
   protected void showErrorMessage(String errorMessage, String errorMessageTitle) {
-
+    AlertHelper.showErrorMessageThreadSafe(getActivity(), errorMessage, errorMessageTitle);
   }
 
   protected void injectComponents() {

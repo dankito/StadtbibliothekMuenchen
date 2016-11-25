@@ -20,6 +20,7 @@ import net.dankito.stadtbibliothekmuenchen.R;
 import net.dankito.stadtbibliothekmuenchen.StadtbibliothekMuenchenClient;
 import net.dankito.stadtbibliothekmuenchen.adapter.SearchResultsAdapter;
 import net.dankito.stadtbibliothekmuenchen.model.SearchResults;
+import net.dankito.stadtbibliothekmuenchen.util.AlertHelper;
 import net.dankito.stadtbibliothekmuenchen.util.web.callbacks.SimpleSearchCallback;
 import net.dankito.stadtbibliothekmuenchen.util.web.responses.SimpleSearchResponse;
 
@@ -102,7 +103,7 @@ public class TabSearchFragment extends Fragment {
     }
   };
 
-  protected void searchMedia(String query) {
+  protected void searchMedia(final String query) {
     stadtbibliothekMuenchenClient.doSimpleSearchAsync(query, new SimpleSearchCallback() {
       @Override
       public void completed(SimpleSearchResponse response) {
@@ -110,7 +111,7 @@ public class TabSearchFragment extends Fragment {
           searchResultRetrieved(response.getSearchResults());
         }
         else {
-
+          showErrorMessageThreadSafe(response.getError(), getActivity().getString(R.string.error_title_could_not_do_simple_search, query));
         }
       }
     });
@@ -118,6 +119,11 @@ public class TabSearchFragment extends Fragment {
 
   protected void searchResultRetrieved(SearchResults searchResults) {
     searchResultsAdapter.setSearchResultsThreadSafe(searchResults);
+  }
+
+
+  protected void showErrorMessageThreadSafe(String errorMessage, String errorMessageTitle) {
+    AlertHelper.showErrorMessageThreadSafe(getActivity(), errorMessage, errorMessageTitle);
   }
 
 
