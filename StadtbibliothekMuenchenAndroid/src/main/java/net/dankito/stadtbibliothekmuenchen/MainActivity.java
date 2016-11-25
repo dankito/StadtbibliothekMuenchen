@@ -13,8 +13,14 @@ import android.view.MenuItem;
 import android.view.View;
 
 import net.dankito.stadtbibliothekmuenchen.adapter.MainActivityTabsAdapter;
+import net.dankito.stadtbibliothekmuenchen.di.AndroidDiComponent;
+import net.dankito.stadtbibliothekmuenchen.di.AndroidDiContainer;
+import net.dankito.stadtbibliothekmuenchen.di.DaggerAndroidDiComponent;
 
 public class MainActivity extends AppCompatActivity {
+
+
+  protected AndroidDiComponent component;
 
   /**
    * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -34,6 +40,21 @@ public class MainActivity extends AppCompatActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+
+    setupDependencyInjection();
+
+    setupUi();
+  }
+
+  protected void setupDependencyInjection() {
+    component = DaggerAndroidDiComponent.builder()
+        .androidDiContainer(new AndroidDiContainer(this))
+        .build();
+
+    component.inject(this);
+  }
+
+  protected void setupUi() {
     setContentView(R.layout.activity_main);
 
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -56,7 +77,6 @@ public class MainActivity extends AppCompatActivity {
             .setAction("Action", null).show();
       }
     });
-
   }
 
 
@@ -72,6 +92,11 @@ public class MainActivity extends AppCompatActivity {
     int id = item.getItemId();
 
     return super.onOptionsItemSelected(item);
+  }
+
+
+  public AndroidDiComponent getComponent() {
+    return component;
   }
 
 }
