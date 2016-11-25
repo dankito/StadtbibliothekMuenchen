@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/list_item_borrows_height"
+    >
+
+    <TextView
+        android:id="@+id/txtvwBorrowTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@+id/txtvwBorrowDueOnDate"
+        android:gravity="center_vertical"
+        android:maxLines="2"
+        android:ellipsize="end"
+    />
+
+    <TextView
+        android:id="@+id/txtvwBorrowDueOnDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="@dimen/list_item_borrows_due_on_margin_left"
+        android:gravity="center_vertical|right"
+    />
+
+</RelativeLayout>
