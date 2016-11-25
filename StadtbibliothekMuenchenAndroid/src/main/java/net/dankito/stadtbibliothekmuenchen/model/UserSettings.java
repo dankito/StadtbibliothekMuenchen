@@ -10,6 +10,18 @@ public class UserSettings {
 
   protected String password;
 
+  protected boolean isFirstWarningEnabled = false;
+
+  protected int countDaysBeforeExpirationForeFirstWarning = 7;
+
+  protected boolean isSecondWarningEnabled = false;
+
+  protected int countDaysBeforeExpirationForSecondWarning = 3;
+
+  protected boolean isThirdWarningEnabled = true;
+
+  protected int countDaysBeforeExpirationForThirdWarning = 1;
+
 
   public UserSettings() {
 
@@ -30,6 +42,54 @@ public class UserSettings {
 
   public void setPassword(String password) {
     this.password = password;
+  }
+
+  public boolean isFirstWarningEnabled() {
+    return isFirstWarningEnabled;
+  }
+
+  public void setFirstWarningEnabled(boolean firstWarningEnabled) {
+    isFirstWarningEnabled = firstWarningEnabled;
+  }
+
+  public int getCountDaysBeforeExpirationForeFirstWarning() {
+    return countDaysBeforeExpirationForeFirstWarning;
+  }
+
+  public void setCountDaysBeforeExpirationForeFirstWarning(int countDaysBeforeExpirationForeFirstWarning) {
+    this.countDaysBeforeExpirationForeFirstWarning = countDaysBeforeExpirationForeFirstWarning;
+  }
+
+  public boolean isSecondWarningEnabled() {
+    return isSecondWarningEnabled;
+  }
+
+  public void setSecondWarningEnabled(boolean secondWarningEnabled) {
+    isSecondWarningEnabled = secondWarningEnabled;
+  }
+
+  public int getCountDaysBeforeExpirationForSecondWarning() {
+    return countDaysBeforeExpirationForSecondWarning;
+  }
+
+  public void setCountDaysBeforeExpirationForSecondWarning(int countDaysBeforeExpirationForSecondWarning) {
+    this.countDaysBeforeExpirationForSecondWarning = countDaysBeforeExpirationForSecondWarning;
+  }
+
+  public boolean isThirdWarningEnabled() {
+    return isThirdWarningEnabled;
+  }
+
+  public void setThirdWarningEnabled(boolean thirdWarningEnabled) {
+    isThirdWarningEnabled = thirdWarningEnabled;
+  }
+
+  public int getCountDaysBeforeExpirationForThirdWarning() {
+    return countDaysBeforeExpirationForThirdWarning;
+  }
+
+  public void setCountDaysBeforeExpirationForThirdWarning(int countDaysBeforeExpirationForThirdWarning) {
+    this.countDaysBeforeExpirationForThirdWarning = countDaysBeforeExpirationForThirdWarning;
   }
 
 }
