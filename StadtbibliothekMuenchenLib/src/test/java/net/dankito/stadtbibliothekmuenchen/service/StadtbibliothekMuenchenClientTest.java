@@ -4,6 +4,7 @@ import net.dankito.stadtbibliothekmuenchen.model.MediaBorrow;
 import net.dankito.stadtbibliothekmuenchen.model.MediaBorrows;
 import net.dankito.stadtbibliothekmuenchen.model.SearchResult;
 import net.dankito.stadtbibliothekmuenchen.model.SearchResults;
+import net.dankito.stadtbibliothekmuenchen.services.BorrowExpirationManager;
 import net.dankito.stadtbibliothekmuenchen.services.StadtbibliothekMuenchenClient;
 import net.dankito.stadtbibliothekmuenchen.util.StringUtils;
 import net.dankito.stadtbibliothekmuenchen.util.web.OkHttpWebClient;
@@ -51,7 +52,7 @@ public class StadtbibliothekMuenchenClientTest {
   public void setUp() throws Exception {
     this.testDataProperties = loadTestDataProperties();
 
-    this.underTest = new StadtbibliothekMuenchenClient(new OkHttpWebClient());
+    this.underTest = new StadtbibliothekMuenchenClient(new OkHttpWebClient(), new BorrowExpirationManager());
   }
 
   @After

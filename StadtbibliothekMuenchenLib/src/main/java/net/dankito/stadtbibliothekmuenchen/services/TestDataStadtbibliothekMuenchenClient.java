@@ -22,8 +22,8 @@ public class TestDataStadtbibliothekMuenchenClient extends StadtbibliothekMuench
   protected Random random = new Random(System.currentTimeMillis());
 
 
-  public TestDataStadtbibliothekMuenchenClient(IWebClient webClient) {
-    super(webClient);
+  public TestDataStadtbibliothekMuenchenClient(IWebClient webClient, BorrowExpirationManager borrowExpirationManager) {
+    super(webClient, borrowExpirationManager);
   }
 
 

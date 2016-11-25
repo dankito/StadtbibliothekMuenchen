@@ -79,14 +79,17 @@ public class StadtbibliothekMuenchenClient {
 
   protected IWebClient webClient;
 
+  protected BorrowExpirationManager borrowExpirationManager;
+
   protected boolean isLoggedIn = false;
 
   // stores the once retrieved front page html so that we can navigate to each option (User Account (Benutzerkonto), simple and extended search, ...)
   protected String frontPageHtml = null;
 
 
-  public StadtbibliothekMuenchenClient(IWebClient webClient) {
+  public StadtbibliothekMuenchenClient(IWebClient webClient, BorrowExpirationManager borrowExpirationManager) {
     this.webClient = webClient;
+    this.borrowExpirationManager = borrowExpirationManager;
   }
 
 
