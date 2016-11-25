@@ -54,8 +54,8 @@ public class AndroidDiContainer {
 
   @Provides
   @Singleton
-  public StadtbibliothekMuenchenClient provideStadtbibliothekMuenchenClient(IWebClient webClient, BorrowExpirationCalculator borrowExpirationCalculator) {
-    return new TestDataStadtbibliothekMuenchenClient(webClient, borrowExpirationCalculator);
+  public StadtbibliothekMuenchenClient provideStadtbibliothekMuenchenClient(IWebClient webClient, BorrowExpirationCalculator borrowExpirationCalculator, UserSettings userSettings) {
+    return new TestDataStadtbibliothekMuenchenClient(webClient, borrowExpirationCalculator, userSettings);
   }
 
 }

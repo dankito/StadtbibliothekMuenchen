@@ -4,6 +4,7 @@ import net.dankito.stadtbibliothekmuenchen.model.MediaBorrow;
 import net.dankito.stadtbibliothekmuenchen.model.MediaBorrows;
 import net.dankito.stadtbibliothekmuenchen.model.SearchResult;
 import net.dankito.stadtbibliothekmuenchen.model.SearchResults;
+import net.dankito.stadtbibliothekmuenchen.model.UserSettings;
 import net.dankito.stadtbibliothekmuenchen.util.web.IWebClient;
 import net.dankito.stadtbibliothekmuenchen.util.web.RequestCallback;
 import net.dankito.stadtbibliothekmuenchen.util.web.RequestParameters;
@@ -81,15 +82,18 @@ public class StadtbibliothekMuenchenClient {
 
   protected BorrowExpirationCalculator borrowExpirationCalculator;
 
+  protected UserSettings userSettings;
+
   protected boolean isLoggedIn = false;
 
   // stores the once retrieved front page html so that we can navigate to each option (User Account (Benutzerkonto), simple and extended search, ...)
   protected String frontPageHtml = null;
 
 
-  public StadtbibliothekMuenchenClient(IWebClient webClient, BorrowExpirationCalculator borrowExpirationCalculator) {
+  public StadtbibliothekMuenchenClient(IWebClient webClient, BorrowExpirationCalculator borrowExpirationCalculator, UserSettings userSettings) {
     this.webClient = webClient;
     this.borrowExpirationCalculator = borrowExpirationCalculator;
+    this.userSettings = userSettings;
   }
 
 
