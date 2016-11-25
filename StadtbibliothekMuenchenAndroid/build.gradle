@@ -40,6 +40,8 @@ dependencies {
 
     compile 'org.slf4j:slf4j-android:1.7.12'
 
+    compile 'com.squareup.picasso:picasso:2.5.2'
+
     apt "com.google.dagger:dagger-compiler:$DAGGER_VERSION"
     provided 'javax.annotation:jsr250-api:1.0'
     compile 'javax.inject:javax.inject:1'
