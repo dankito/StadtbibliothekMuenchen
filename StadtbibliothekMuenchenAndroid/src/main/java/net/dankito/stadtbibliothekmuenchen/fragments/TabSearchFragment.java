@@ -57,12 +57,7 @@ public class TabSearchFragment extends Fragment {
     lstvwSearchResults.setAdapter(searchResultsAdapter);
 
     FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fabSearch);
-    fab.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        floatingActionButtonSearchClicked();
-      }
-    });
+    fab.setOnClickListener(floatingActionButtonSearchClickListener);
 
     return view;
   }
@@ -85,11 +80,14 @@ public class TabSearchFragment extends Fragment {
   }
 
 
-  protected void floatingActionButtonSearchClicked() {
-    if(searchView != null) {
-      searchView.setIconified(false);
+  protected View.OnClickListener floatingActionButtonSearchClickListener = new View.OnClickListener() {
+    @Override
+    public void onClick(View view) {
+      if(searchView != null) {
+        searchView.setIconified(false);
+      }
     }
-  }
+  };
 
   protected SearchView.OnQueryTextListener entriesQueryTextListener = new SearchView.OnQueryTextListener() {
     @Override
