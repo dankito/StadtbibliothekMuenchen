@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Stadtbibliothek München</string>
 
+    <string name="search">Search</string>
+
     <string name="tab_title_borrows">Borrows</string>
     <string name="tab_title_search">Search</string>
 
