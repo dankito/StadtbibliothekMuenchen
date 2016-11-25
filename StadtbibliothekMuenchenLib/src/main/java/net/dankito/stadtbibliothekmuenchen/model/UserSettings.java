@@ -52,11 +52,11 @@ public class UserSettings {
     isFirstWarningEnabled = firstWarningEnabled;
   }
 
-  public int getCountDaysBeforeExpirationForeFirstWarning() {
+  public int getCountDaysBeforeExpirationForFirstWarning() {
     return countDaysBeforeExpirationForeFirstWarning;
   }
 
-  public void setCountDaysBeforeExpirationForeFirstWarning(int countDaysBeforeExpirationForeFirstWarning) {
+  public void setCountDaysBeforeExpirationForFirstWarning(int countDaysBeforeExpirationForeFirstWarning) {
     this.countDaysBeforeExpirationForeFirstWarning = countDaysBeforeExpirationForeFirstWarning;
   }
 
