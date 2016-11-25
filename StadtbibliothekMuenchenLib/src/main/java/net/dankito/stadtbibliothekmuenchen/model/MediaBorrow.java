@@ -1,5 +1,7 @@
 package net.dankito.stadtbibliothekmuenchen.model;
 
+import net.dankito.stadtbibliothekmuenchen.util.StringUtils;
+
 import java.util.Date;
 
 /**
@@ -43,6 +45,10 @@ public class MediaBorrow {
     this.title = title;
   }
 
+  public boolean isAuthorSet() {
+    return StringUtils.isNotNullOrEmpty(getAuthor());
+  }
+
   public String getAuthor() {
     return author;
   }
@@ -73,6 +79,10 @@ public class MediaBorrow {
 
   public void setMediaNumber(String mediaNumber) {
     this.mediaNumber = mediaNumber;
+  }
+
+  public boolean isDueOnSet() {
+    return getDueOn() != null;
   }
 
   public Date getDueOn() {
