@@ -4,6 +4,10 @@ import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import net.dankito.stadtbibliothekmuenchen.R;
 import net.dankito.stadtbibliothekmuenchen.model.SearchResult;
@@ -67,6 +71,22 @@ public class SearchResultsAdapter extends BaseAdapter {
     }
 
     SearchResult searchResult = (SearchResult) getItem(index);
+
+    TextView txtvwSearchResultMediaInfo = (TextView)convertView.findViewById(R.id.txtvwSearchResultMediaInfo);
+    txtvwSearchResultMediaInfo.setText(searchResult.getMediaInfo());
+
+    TextView txtvwYear = (TextView)convertView.findViewById(R.id.txtvwYear);
+    txtvwYear.setText(searchResult.getYear());
+
+    ImageView imgvwMediaTypeIcon = (ImageView)convertView.findViewById(R.id.imgvwMediaTypeIcon);
+    Picasso.with(activity)
+        .load(searchResult.getMediaTypeIconUrl())
+        .into(imgvwMediaTypeIcon);
+
+    ImageView imgvwAvailabilityIcon = (ImageView)convertView.findViewById(R.id.imgvwAvailabilityIcon);
+    Picasso.with(activity)
+        .load(searchResult.getAvailabilityIconUrl())
+        .into(imgvwAvailabilityIcon);
 
     return convertView;
   }
