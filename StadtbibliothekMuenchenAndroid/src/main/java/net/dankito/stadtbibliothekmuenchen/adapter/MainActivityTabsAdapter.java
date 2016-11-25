@@ -6,8 +6,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import net.dankito.stadtbibliothekmuenchen.MainActivity;
 import net.dankito.stadtbibliothekmuenchen.R;
+import net.dankito.stadtbibliothekmuenchen.fragments.TabBorrowsFragment;
 
 /**
  * Created by ganymed on 25/11/16.
@@ -18,6 +18,8 @@ public class MainActivityTabsAdapter extends FragmentPagerAdapter {
   protected Activity activity;
 
   protected FragmentManager fragmentManager;
+
+  protected TabBorrowsFragment borrowsFragment = null;
 
 
   public MainActivityTabsAdapter(Activity activity, FragmentManager fragmentManager) {
@@ -48,9 +50,14 @@ public class MainActivityTabsAdapter extends FragmentPagerAdapter {
 
   @Override
   public Fragment getItem(int position) {
-    // getItem is called to instantiate the fragment for the given page.
-    // Return a PlaceholderFragment (defined as a static inner class below).
-    return MainActivity.PlaceholderFragment.newInstance(position + 1);
+    if(position == 0) {
+      if(borrowsFragment == null) {
+        borrowsFragment = new TabBorrowsFragment();
+      }
+      return borrowsFragment;
+    }
+
+    return null;
   }
 
 }
