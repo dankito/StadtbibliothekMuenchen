@@ -14,16 +14,16 @@ import java.util.Date;
 /**
  * Created by ganymed on 25/11/16.
  */
-public class BorrowExpirationManagerTest {
+public class BorrowExpirationCalculatorTest {
 
-  protected BorrowExpirationManager underTest;
+  protected BorrowExpirationCalculator underTest;
 
   protected UserSettings userSettings;
 
 
   @Before
   public void setUp() throws Exception {
-    underTest = new BorrowExpirationManager();
+    underTest = new BorrowExpirationCalculator();
 
     userSettings = createTestUserSettings();
   }

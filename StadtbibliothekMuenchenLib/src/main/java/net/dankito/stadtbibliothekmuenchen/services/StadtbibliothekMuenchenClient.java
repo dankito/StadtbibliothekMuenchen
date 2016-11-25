@@ -79,7 +79,7 @@ public class StadtbibliothekMuenchenClient {
 
   protected IWebClient webClient;
 
-  protected BorrowExpirationManager borrowExpirationManager;
+  protected BorrowExpirationCalculator borrowExpirationCalculator;
 
   protected boolean isLoggedIn = false;
 
@@ -87,9 +87,9 @@ public class StadtbibliothekMuenchenClient {
   protected String frontPageHtml = null;
 
 
-  public StadtbibliothekMuenchenClient(IWebClient webClient, BorrowExpirationManager borrowExpirationManager) {
+  public StadtbibliothekMuenchenClient(IWebClient webClient, BorrowExpirationCalculator borrowExpirationCalculator) {
     this.webClient = webClient;
-    this.borrowExpirationManager = borrowExpirationManager;
+    this.borrowExpirationCalculator = borrowExpirationCalculator;
   }
 
 

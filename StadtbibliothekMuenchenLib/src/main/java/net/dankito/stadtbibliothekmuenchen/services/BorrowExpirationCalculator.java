@@ -13,7 +13,7 @@ import java.util.Date;
  * Created by ganymed on 25/11/16.
  */
 
-public class BorrowExpirationManager {
+public class BorrowExpirationCalculator {
 
   protected static final DateFormat CALCULATE_TODAY_AT_MIDNIGHT_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
 
