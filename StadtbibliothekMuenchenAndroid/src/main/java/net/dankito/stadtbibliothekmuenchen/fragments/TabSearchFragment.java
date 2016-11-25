@@ -2,6 +2,7 @@ package net.dankito.stadtbibliothekmuenchen.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,8 +34,22 @@ public class TabSearchFragment extends Fragment {
     ListView lstvwSearchResults = (ListView)view.findViewById(R.id.lstvwSearchResults);
     lstvwSearchResults.setAdapter(searchResultsAdapter);
 
+    FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fabSearch);
+    fab.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        floatingActionButtonSearchClicked();
+      }
+    });
+
     return view;
   }
+
+
+  protected void floatingActionButtonSearchClicked() {
+
+  }
+
 
   protected void injectComponents() {
     ((MainActivity) getActivity()).getComponent().inject(this);
