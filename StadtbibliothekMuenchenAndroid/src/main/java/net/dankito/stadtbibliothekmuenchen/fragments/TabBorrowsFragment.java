@@ -12,6 +12,9 @@ import net.dankito.stadtbibliothekmuenchen.MainActivity;
 import net.dankito.stadtbibliothekmuenchen.R;
 import net.dankito.stadtbibliothekmuenchen.StadtbibliothekMuenchenClient;
 import net.dankito.stadtbibliothekmuenchen.adapter.BorrowsAdapter;
+import net.dankito.stadtbibliothekmuenchen.model.UserSettings;
+import net.dankito.stadtbibliothekmuenchen.util.web.callbacks.ExtendAllBorrowsCallback;
+import net.dankito.stadtbibliothekmuenchen.util.web.responses.ExtendAllBorrowsResult;
 
 import javax.inject.Inject;
 
@@ -23,6 +26,9 @@ public class TabBorrowsFragment extends Fragment {
 
   @Inject
   protected StadtbibliothekMuenchenClient stadtbibliothekMuenchenClient;
+
+  @Inject
+  protected UserSettings userSettings;
 
   protected BorrowsAdapter borrowsAdapter;
 
@@ -39,7 +45,29 @@ public class TabBorrowsFragment extends Fragment {
     ListView lstvwBorrows = (ListView)view.findViewById(R.id.lstvwBorrows);
     lstvwBorrows.setAdapter(borrowsAdapter);
 
+    getBorrows();
+
     return view;
+  }
+
+
+  protected void getBorrows() {
+    stadtbibliothekMuenchenClient.extendAllBorrowsAndGetBorrowsStateAsync(userSettings.getIdentityCardNumber(), userSettings.getPassword(), new ExtendAllBorrowsCallback() {
+      @Override
+      public void completed(ExtendAllBorrowsResult result) {
+        if(result.isSuccessful()) {
+          borrowsAdapter.setBorrowsThreadSafe(result.getBorrows());
+        }
+        else {
+          showErrorMessage(result.getError(), getActivity().getString(R.string.error_title_could_not_get_borrows));
+        }
+      }
+    });
+  }
+
+
+  protected void showErrorMessage(String errorMessage, String errorMessageTitle) {
+
   }
 
   protected void injectComponents() {

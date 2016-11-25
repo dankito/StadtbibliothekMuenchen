@@ -3,4 +3,6 @@
 
     <string name="tab_title_borrows">Borrows</string>
     <string name="tab_title_search">Search</string>
+
+    <string name="error_title_could_not_get_borrows">Could not get borrows</string>
 </resources>
