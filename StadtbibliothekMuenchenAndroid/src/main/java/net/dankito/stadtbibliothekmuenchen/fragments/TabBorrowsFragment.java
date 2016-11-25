@@ -60,14 +60,14 @@ public class TabBorrowsFragment extends Fragment {
           borrowsAdapter.setBorrowsThreadSafe(result.getBorrows());
         }
         else {
-          showErrorMessage(result.getError(), getActivity().getString(R.string.error_title_could_not_get_borrows));
+          showErrorMessageThreadSafe(result.getError(), getActivity().getString(R.string.error_title_could_not_get_borrows));
         }
       }
     });
   }
 
 
-  protected void showErrorMessage(String errorMessage, String errorMessageTitle) {
+  protected void showErrorMessageThreadSafe(String errorMessage, String errorMessageTitle) {
     AlertHelper.showErrorMessageThreadSafe(getActivity(), errorMessage, errorMessageTitle);
   }
 
