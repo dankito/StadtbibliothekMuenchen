@@ -1,4 +1,4 @@
-package net.dankito.stadtbibliothekmuenchen;
+package net.dankito.stadtbibliothekmuenchen.services;
 
 import net.dankito.stadtbibliothekmuenchen.model.MediaBorrow;
 import net.dankito.stadtbibliothekmuenchen.model.MediaBorrows;

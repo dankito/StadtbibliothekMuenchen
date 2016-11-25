@@ -10,7 +10,7 @@ import android.widget.ListView;
 
 import net.dankito.stadtbibliothekmuenchen.MainActivity;
 import net.dankito.stadtbibliothekmuenchen.R;
-import net.dankito.stadtbibliothekmuenchen.StadtbibliothekMuenchenClient;
+import net.dankito.stadtbibliothekmuenchen.services.StadtbibliothekMuenchenClient;
 import net.dankito.stadtbibliothekmuenchen.adapter.BorrowsAdapter;
 import net.dankito.stadtbibliothekmuenchen.model.UserSettings;
 import net.dankito.stadtbibliothekmuenchen.util.AlertHelper;

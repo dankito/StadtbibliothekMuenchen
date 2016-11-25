@@ -17,7 +17,7 @@ import android.widget.ListView;
 
 import net.dankito.stadtbibliothekmuenchen.MainActivity;
 import net.dankito.stadtbibliothekmuenchen.R;
-import net.dankito.stadtbibliothekmuenchen.StadtbibliothekMuenchenClient;
+import net.dankito.stadtbibliothekmuenchen.services.StadtbibliothekMuenchenClient;
 import net.dankito.stadtbibliothekmuenchen.adapter.SearchResultsAdapter;
 import net.dankito.stadtbibliothekmuenchen.model.SearchResults;
 import net.dankito.stadtbibliothekmuenchen.util.AlertHelper;

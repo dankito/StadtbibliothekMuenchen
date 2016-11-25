@@ -2,8 +2,8 @@ package net.dankito.stadtbibliothekmuenchen.di;
 
 import android.app.Activity;
 
-import net.dankito.stadtbibliothekmuenchen.StadtbibliothekMuenchenClient;
-import net.dankito.stadtbibliothekmuenchen.TestDataStadtbibliothekMuenchenClient;
+import net.dankito.stadtbibliothekmuenchen.services.StadtbibliothekMuenchenClient;
+import net.dankito.stadtbibliothekmuenchen.services.TestDataStadtbibliothekMuenchenClient;
 import net.dankito.stadtbibliothekmuenchen.model.UserSettings;
 import net.dankito.stadtbibliothekmuenchen.util.web.IWebClient;
 import net.dankito.stadtbibliothekmuenchen.util.web.OkHttpWebClient;
