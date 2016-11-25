@@ -8,8 +8,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import net.dankito.stadtbibliothekmuenchen.MainActivity;
 import net.dankito.stadtbibliothekmuenchen.R;
+import net.dankito.stadtbibliothekmuenchen.StadtbibliothekMuenchenClient;
 import net.dankito.stadtbibliothekmuenchen.adapter.BorrowsAdapter;
+
+import javax.inject.Inject;
 
 /**
  * Created by ganymed on 25/11/16.
@@ -17,12 +21,17 @@ import net.dankito.stadtbibliothekmuenchen.adapter.BorrowsAdapter;
 
 public class TabBorrowsFragment extends Fragment {
 
+  @Inject
+  protected StadtbibliothekMuenchenClient stadtbibliothekMuenchenClient;
+
   protected BorrowsAdapter borrowsAdapter;
 
 
   @Nullable
   @Override
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    injectComponents();
+
     View view = inflater.inflate(R.layout.fragment_tab_borrows, container, false);
 
     borrowsAdapter = new BorrowsAdapter(getActivity());
@@ -31,6 +40,10 @@ public class TabBorrowsFragment extends Fragment {
     lstvwBorrows.setAdapter(borrowsAdapter);
 
     return view;
+  }
+
+  protected void injectComponents() {
+    ((MainActivity) getActivity()).getComponent().inject(this);
   }
 
 }
