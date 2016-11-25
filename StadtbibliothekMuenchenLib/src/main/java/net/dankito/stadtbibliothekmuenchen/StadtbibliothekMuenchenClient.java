@@ -2,14 +2,18 @@ package net.dankito.stadtbibliothekmuenchen;
 
 import net.dankito.stadtbibliothekmuenchen.model.MediaBorrow;
 import net.dankito.stadtbibliothekmuenchen.model.MediaBorrows;
+import net.dankito.stadtbibliothekmuenchen.model.SearchResult;
+import net.dankito.stadtbibliothekmuenchen.model.SearchResults;
 import net.dankito.stadtbibliothekmuenchen.util.web.IWebClient;
 import net.dankito.stadtbibliothekmuenchen.util.web.RequestCallback;
 import net.dankito.stadtbibliothekmuenchen.util.web.RequestParameters;
 import net.dankito.stadtbibliothekmuenchen.util.web.WebClientResponse;
 import net.dankito.stadtbibliothekmuenchen.util.web.callbacks.ExtendAllBorrowsCallback;
 import net.dankito.stadtbibliothekmuenchen.util.web.callbacks.LoginCallback;
+import net.dankito.stadtbibliothekmuenchen.util.web.callbacks.SimpleSearchCallback;
 import net.dankito.stadtbibliothekmuenchen.util.web.responses.ExtendAllBorrowsResult;
 import net.dankito.stadtbibliothekmuenchen.util.web.responses.LoginResult;
+import net.dankito.stadtbibliothekmuenchen.util.web.responses.SimpleSearchResponse;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -28,6 +32,9 @@ import java.util.Date;
  */
 
 public class StadtbibliothekMuenchenClient {
+
+  public static final int COUNT_SEARCH_RESULTS_PER_PAGE = 22;
+
 
   protected static final String HOMEPAGE_URL = "https://ssl.muenchen.de";
 
@@ -51,6 +58,15 @@ public class StadtbibliothekMuenchenClient {
   protected static final int BORROW_TABLE_DATA_INDEX_NOTE = 4;
 
   protected static final DateFormat DueOnDateParser = new SimpleDateFormat("dd.MM.yyyy");
+
+
+  protected static final int SEARCH_RESULT_TABLE_DATA_INDEX_MEDIA_TYPE = 2;
+
+  protected static final int SEARCH_RESULT_TABLE_DATA_INDEX_MEDIA_INFO = 3;
+
+  protected static final int SEARCH_RESULT_TABLE_DATA_INDEX_AVAILABILITY = 4;
+
+  protected static final int SEARCH_RESULT_TABLE_DATA_INDEX_YEAR = 5;
 
 
   public static final int DOWNLOAD_CONNECTION_TIMEOUT_MILLIS = 2000;
@@ -151,9 +167,7 @@ public class StadtbibliothekMuenchenClient {
           }
         }
 
-        if(requestBody.length() > 0) {
-          requestBody = requestBody.substring(0, requestBody.length() - 1); // cut final '&'
-        }
+        requestBody = removeLastAmpersand(requestBody);
 
         doLogin(loginUrl, requestBody, callback);
       }
@@ -223,9 +237,7 @@ public class StadtbibliothekMuenchenClient {
           requestBody += name + "=" + URLEncoder.encode(value, "ASCII") + "&";
         }
 
-        if(requestBody.length() > 0) {
-          requestBody = requestBody.substring(0, requestBody.length() - 1); // cut final '&'
-        }
+        requestBody = removeLastAmpersand(requestBody);
 
         webClient.postAsync(createRequestParametersWithDefaultValues(confirmLoginUrl, requestBody), new RequestCallback() {
           @Override
@@ -357,9 +369,7 @@ public class StadtbibliothekMuenchenClient {
         }
       }
 
-      if(requestBody.length() > 0) {
-        requestBody = requestBody.substring(0, requestBody.length() - 1); // cut final '&'
-      }
+      requestBody = removeLastAmpersand(requestBody);
 
       extendAllBorrows(extendAllBorrowsUrl, requestBody, callback);
     } catch(Exception e) {
@@ -503,6 +513,171 @@ public class StadtbibliothekMuenchenClient {
   }
 
 
+  public void doSimpleSearchAsync(final String searchTerm, final SimpleSearchCallback callback) {
+    RequestParameters parameters = createRequestParametersWithDefaultValues(HOMEPAGE_URL);
+
+    webClient.getAsync(parameters, new RequestCallback() {
+      @Override
+      public void completed(WebClientResponse response) {
+        if(response.isSuccessful() == false) {
+          callback.completed(new SimpleSearchResponse(response.getError()));
+        }
+        else {
+          parseHomepageAndNavigateToSimpleSearch(searchTerm, response, callback);
+        }
+      }
+    });
+  }
+
+  protected void parseHomepageAndNavigateToSimpleSearch(String searchTerm, WebClientResponse response, SimpleSearchCallback callback) {
+    try {
+      Document document = Jsoup.parse(response.getBody());
+      Element simpleSearchTextInputElement = document.body().select("#schnellsuche").first();
+
+      if(simpleSearchTextInputElement != null) { // we are already on simple search page
+        executeSimpleSearch(searchTerm, response, callback);
+      }
+      else {
+        Element simpleSearchNavigationItemElement = findNavigationItemWithText(response.getBody(), EINFACHE_SUCHE_NAVIGATION_ITEM_TEXT);
+        if(simpleSearchNavigationItemElement == null) {
+          callback.completed(new SimpleSearchResponse("Konnte Link mit '" + EINFACHE_SUCHE_NAVIGATION_ITEM_TEXT + "' nicht finden."));
+        }
+        else {
+          navigateToAndExecuteSimpleSearch(searchTerm, simpleSearchNavigationItemElement, callback);
+        }
+      }
+    } catch(Exception e) {
+      log.error("Could not parse Homepage and navigate to simple search", e);
+      callback.completed(new SimpleSearchResponse("Konnte nicht zur einfachen Suche navigieren: " + e.getLocalizedMessage()));
+    }
+  }
+
+  protected void navigateToAndExecuteSimpleSearch(final String searchTerm, Element simpleSearchNavigationItemElement, final SimpleSearchCallback callback) {
+    String simpleSearchUrl = makeLinkAbsolute(simpleSearchNavigationItemElement.attr("href"));
+    RequestParameters parameters = new RequestParameters(simpleSearchUrl);
+
+    webClient.getAsync(parameters, new RequestCallback() {
+      @Override
+      public void completed(WebClientResponse response) {
+        if(response.isSuccessful() == false) {
+          callback.completed(new SimpleSearchResponse(response.getError()));
+        }
+        else {
+          executeSimpleSearch(searchTerm, response, callback);
+        }
+      }
+    });
+  }
+
+  protected void executeSimpleSearch(String searchTerm, WebClientResponse response, SimpleSearchCallback callback) {
+    try {
+      Document document = Jsoup.parse(response.getBody());
+
+      Element formElement = getPageFormElement(document);
+      String executeSimpleSearchUrl = makeLinkAbsolute(formElement.attr("action"));
+
+      String requestBody = "";
+      Elements inputElements = document.body().select("input");
+      for(Element inputElement : inputElements) {
+        String type = inputElement.attr("type");
+        String name = inputElement.attr("name");
+
+        if("hidden".equals(type) || ("submit".equals(type) && "textButton".equals(name)) ) {
+          requestBody += name + "=" + URLEncoder.encode(inputElement.attr("value"), "ASCII") + "&";
+        }
+        else if("text".equals(type)) {
+          requestBody += name + "=" + URLEncoder.encode(searchTerm, "ASCII") + "&";
+        }
+      }
+
+      requestBody = removeLastAmpersand(requestBody);
+
+      executeSimpleSearch(searchTerm, executeSimpleSearchUrl, requestBody, callback);
+    } catch(Exception e) {
+      log.error("Could not execute simple search on simple search page", e);
+      callback.completed(new SimpleSearchResponse("Konnte Einfache Suche nicht ausführen: " + e.getLocalizedMessage()));
+    }
+  }
+
+  protected void executeSimpleSearch(final String searchTerm, String executeSimpleSearchUrl, String requestBody, final SimpleSearchCallback callback) {
+    RequestParameters parameters = createRequestParametersWithDefaultValues(executeSimpleSearchUrl, requestBody);
+
+    webClient.postAsync(parameters, new RequestCallback() {
+      @Override
+      public void completed(WebClientResponse response) {
+        if(response.isSuccessful() == false) {
+          callback.completed(new SimpleSearchResponse(response.getError()));
+        }
+        else {
+          parseSimpleSearchResults(searchTerm, response, callback);
+        }
+      }
+    });
+  }
+
+  protected void parseSimpleSearchResults(String searchTerm, WebClientResponse response, SimpleSearchCallback callback) {
+    try {
+      SearchResults searchResults = new SearchResults();
+      Document document = Jsoup.parse(response.getBody());
+      Elements tableRowElements = document.body().select("tr.rTable_tr_even, tr.rTable_tr_odd");
+
+      for(Element tableRowElement : tableRowElements) {
+        SearchResult searchResult = parseSearchResultTableRow(tableRowElement);
+
+        searchResults.addSearchResult(searchResult);
+      }
+
+      callback.completed(new SimpleSearchResponse(searchTerm, searchResults));
+    } catch(Exception e) {
+      log.error("Could not parse Simple Search result page", e);
+      callback.completed(new SimpleSearchResponse("Konnte Ergebnisse der einfachen Suche nicht parsen: " + e.getLocalizedMessage()));
+    }
+  }
+
+  protected SearchResult parseSearchResultTableRow(Element tableRowElement) {
+    SearchResult searchResult = new SearchResult();
+
+    for(int i = 0; i < tableRowElement.children().size(); i++) {
+      Element tableDataElement = tableRowElement.child(i);
+
+      if(i == SEARCH_RESULT_TABLE_DATA_INDEX_MEDIA_TYPE) {
+        if(tableDataElement.children().size() > 0 && "img".equals(tableDataElement.child(0).nodeName())) {
+          searchResult.setMediaTypeIconUrl(makeLinkAbsolute(tableDataElement.child(0).attr("src")));
+        }
+      }
+      else if(i == SEARCH_RESULT_TABLE_DATA_INDEX_MEDIA_INFO) {
+        if (tableDataElement.children().size() > 0 && "a".equals(tableDataElement.child(0).nodeName())) {
+          searchResult.setMediaInfo(tableDataElement.child(0).text());
+          searchResult.setMediaDetailsToken(getMediaDetailsUrl(tableDataElement.child(0)));
+          searchResult.setSearchResultsDocument(tableDataElement.ownerDocument());
+        }
+      }
+      else if(i == SEARCH_RESULT_TABLE_DATA_INDEX_AVAILABILITY) {
+        if (tableDataElement.children().size() > 0 && "span".equals(tableDataElement.child(0).nodeName())) {
+          Element spanElement = tableDataElement.child(0);
+          if (spanElement.children().size() > 0 && "img".equals(spanElement.child(0).nodeName())) {
+            searchResult.setAvailabilityIconUrl(makeLinkAbsolute(spanElement.child(0).attr("src")));
+          }
+        }
+      }
+      else if(i == SEARCH_RESULT_TABLE_DATA_INDEX_YEAR) {
+        searchResult.setYear(tableDataElement.text());
+      }
+    }
+
+    return searchResult;
+  }
+
+  protected String getMediaDetailsUrl(Element searchResultAnchorElement) {
+    String mediaDetailsUrl = searchResultAnchorElement.attr("href");
+
+    mediaDetailsUrl = mediaDetailsUrl.replace("javascript:htmlOnLink('", "");
+    mediaDetailsUrl = mediaDetailsUrl.replace("')", "");
+
+    return mediaDetailsUrl;
+  }
+
+
   protected Element getPageFormElement(Document document) {
     return document.body().select("form[name='" + FORM_NAME + "'").first();
   }
@@ -526,6 +701,13 @@ public class StadtbibliothekMuenchenClient {
     }
 
     return url;
+  }
+
+  protected String removeLastAmpersand(String requestBody) {
+    if(requestBody.length() > 0) {
+      requestBody = requestBody.substring(0, requestBody.length() - 1); // cut final '&'
+    }
+    return requestBody;
   }
 
   protected RequestParameters createRequestParametersWithDefaultValues(String url) {
