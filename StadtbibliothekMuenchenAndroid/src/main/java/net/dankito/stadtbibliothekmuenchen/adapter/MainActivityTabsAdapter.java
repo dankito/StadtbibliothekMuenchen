@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import net.dankito.stadtbibliothekmuenchen.R;
 import net.dankito.stadtbibliothekmuenchen.fragments.TabBorrowsFragment;
+import net.dankito.stadtbibliothekmuenchen.fragments.TabSearchFragment;
 
 /**
  * Created by ganymed on 25/11/16.
@@ -21,6 +22,8 @@ public class MainActivityTabsAdapter extends FragmentPagerAdapter {
 
   protected TabBorrowsFragment borrowsFragment = null;
 
+  protected TabSearchFragment searchFragment = null;
+
 
   public MainActivityTabsAdapter(Activity activity, FragmentManager fragmentManager) {
     super(fragmentManager);
@@ -31,7 +34,7 @@ public class MainActivityTabsAdapter extends FragmentPagerAdapter {
 
   @Override
   public int getCount() {
-    return 1;
+    return 2;
   }
 
   @Override
@@ -55,6 +58,12 @@ public class MainActivityTabsAdapter extends FragmentPagerAdapter {
         borrowsFragment = new TabBorrowsFragment();
       }
       return borrowsFragment;
+    }
+    else if(position == 1) {
+      if(searchFragment == null) {
+        searchFragment = new TabSearchFragment();
+      }
+      return searchFragment;
     }
 
     return null;
