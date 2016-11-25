@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="list_item_borrow_already_expired_background_color">#c8b71c1c</color>
+    <color name="list_item_borrow_expired_for_third_warning_background_color">#c8e53935</color>
+    <color name="list_item_borrow_expired_for_second_warning_background_color">#c8f44336</color>
+    <color name="list_item_borrow_expired_for_first_warning_background_color">#b4fb8c00</color>
+    <color name="list_item_borrow_neutral_background_color">#00FFFFFF</color>
 </resources>

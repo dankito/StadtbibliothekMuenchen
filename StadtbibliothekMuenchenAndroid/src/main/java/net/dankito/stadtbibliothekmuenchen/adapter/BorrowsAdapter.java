@@ -7,6 +7,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import net.dankito.stadtbibliothekmuenchen.R;
+import net.dankito.stadtbibliothekmuenchen.model.BorrowExpirations;
 import net.dankito.stadtbibliothekmuenchen.model.MediaBorrow;
 import net.dankito.stadtbibliothekmuenchen.model.MediaBorrows;
 
@@ -86,7 +87,28 @@ public class BorrowsAdapter extends BaseAdapter {
     TextView txtvwBorrowDueOnDate = (TextView)convertView.findViewById(R.id.txtvwBorrowDueOnDate);
     txtvwBorrowDueOnDate.setText(borrow.isDueOnSet() ? DUE_ON_DATE_FORMAT.format(borrow.getDueOn()) : "");
 
+    convertView.setBackgroundColor(getColorForExpirationState(borrow));
+
     return convertView;
+  }
+
+  protected int getColorForExpirationState(MediaBorrow borrow) {
+    BorrowExpirations expirations = borrows.getExpirations();
+
+    if(expirations.getAlreadyExpiredBorrows().contains(borrow)) {
+      return activity.getResources().getColor(R.color.list_item_borrow_already_expired_background_color);
+    }
+    else if(expirations.getBorrowExpirationsForThirdWarning().contains(borrow)) {
+      return activity.getResources().getColor(R.color.list_item_borrow_expired_for_third_warning_background_color);
+    }
+    else if(expirations.getBorrowExpirationsForSecondWarning().contains(borrow)) {
+      return activity.getResources().getColor(R.color.list_item_borrow_expired_for_second_warning_background_color);
+    }
+    else if(expirations.getBorrowExpirationsForFirstWarning().contains(borrow)) {
+      return activity.getResources().getColor(R.color.list_item_borrow_expired_for_first_warning_background_color);
+    }
+
+    return activity.getResources().getColor(R.color.list_item_borrow_neutral_background_color);
   }
 
 }
