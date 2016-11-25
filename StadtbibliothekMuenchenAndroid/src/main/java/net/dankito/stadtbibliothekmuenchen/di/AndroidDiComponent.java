@@ -2,6 +2,7 @@ package net.dankito.stadtbibliothekmuenchen.di;
 
 import net.dankito.stadtbibliothekmuenchen.MainActivity;
 import net.dankito.stadtbibliothekmuenchen.fragments.TabBorrowsFragment;
+import net.dankito.stadtbibliothekmuenchen.fragments.TabSearchFragment;
 
 import javax.inject.Singleton;
 
@@ -18,5 +19,7 @@ public interface AndroidDiComponent {
   void inject(MainActivity activity);
 
   void inject(TabBorrowsFragment tabBorrowsFragment);
+
+  void inject(TabSearchFragment tabSearchFragment);
 
 }
