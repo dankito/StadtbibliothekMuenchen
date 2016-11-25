@@ -39,7 +39,7 @@ public class TestDataStadtbibliothekMuenchenClient extends StadtbibliothekMuench
     MediaBorrow borrow01 = new MediaBorrow();
     borrow01.setTitle("Faust. Der Tragoedie erster Teil");
     borrow01.setAuthor("Johann Wolfgang von Goethe");
-    borrow01.setDueOn(createTestDate(7));
+    borrow01.setDueOn(createTestDate(6));
     borrows.addBorrow(borrow01);
 
     MediaBorrow borrow02 = new MediaBorrow();
@@ -57,13 +57,13 @@ public class TestDataStadtbibliothekMuenchenClient extends StadtbibliothekMuench
     MediaBorrow borrow04 = new MediaBorrow();
     borrow04.setTitle("Angriff auf die Freiheit");
     borrow04.setAuthor("Ilija Trojanow / Julia Zeh");
-    borrow04.setDueOn(createTestDate(1));
+    borrow04.setDueOn(createTestDate(0));
     borrows.addBorrow(borrow04);
 
     MediaBorrow borrow05 = new MediaBorrow();
     borrow05.setTitle("Befreiung vom Überfluss. Auf dem Weg in die Postwachstumsökonomie");
     borrow05.setAuthor("Niko Paech");
-    borrow05.setDueOn(createTestDate(44));
+    borrow05.setDueOn(createTestDate(14));
     borrows.addBorrow(borrow05);
 
     MediaBorrow borrow06 = new MediaBorrow();
@@ -87,14 +87,16 @@ public class TestDataStadtbibliothekMuenchenClient extends StadtbibliothekMuench
     MediaBorrow borrow09 = new MediaBorrow();
     borrow09.setTitle("Kritik der reinen Vernunft");
     borrow09.setAuthor("Immanuel Kant");
-    borrow09.setDueOn(createTestDate(12));
+    borrow09.setDueOn(createTestDate(5));
     borrows.addBorrow(borrow09);
 
     MediaBorrow borrow10 = new MediaBorrow();
     borrow10.setTitle("Liebe");
     borrow10.setAuthor("Marieke");
-    borrow10.setDueOn(createTestDate(144));
+    borrow10.setDueOn(createTestDate(17));
     borrows.addBorrow(borrow10);
+
+    borrows.setExpirations(borrowExpirationCalculator.calculateExpirations(borrows, userSettings));
 
     return borrows;
   }

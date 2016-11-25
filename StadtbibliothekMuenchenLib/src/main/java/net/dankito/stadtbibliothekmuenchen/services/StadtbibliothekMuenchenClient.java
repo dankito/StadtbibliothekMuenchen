@@ -414,6 +414,8 @@ public class StadtbibliothekMuenchenClient {
         }
       }
 
+      borrows.setExpirations(borrowExpirationCalculator.calculateExpirations(borrows, userSettings));
+
       callback.completed(new ExtendAllBorrowsResult(borrows));
     } catch(Exception e) {
       log.error("Could not parse response to extend all borrows", e);
