@@ -426,6 +426,7 @@ public class StadtbibliothekMuenchenClient {
       }
       else if(i == BORROW_TABLE_DATA_INDEX_NOTE) {
         borrow.setNote(tableDataElement.text());
+        borrow.setCannotBeExtendedAnymore(getIfBorrowCannotBeExtendedAnymore(borrow.getNote()));
       }
     }
 
@@ -485,6 +486,10 @@ public class StadtbibliothekMuenchenClient {
     }
 
     return null;
+  }
+
+  protected boolean getIfBorrowCannotBeExtendedAnymore(String note) {
+    return note != null && note.startsWith("Max. "); // TODO: get real text, don't have an example available right nox
   }
 
   protected String urlDecodeString(String stringToDecode) {

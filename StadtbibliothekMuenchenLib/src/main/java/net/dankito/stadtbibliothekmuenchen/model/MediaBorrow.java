@@ -20,6 +20,8 @@ public class MediaBorrow {
 
   protected Date dueOn;
 
+  protected boolean cannotBeExtendedAnymore;
+
   protected String note;
 
 
@@ -79,6 +81,14 @@ public class MediaBorrow {
 
   public void setDueOn(Date dueOn) {
     this.dueOn = dueOn;
+  }
+
+  public boolean cannotBeExtendedAnymore() {
+    return cannotBeExtendedAnymore;
+  }
+
+  public void setCannotBeExtendedAnymore(boolean cannotBeExtendedAnymore) {
+    this.cannotBeExtendedAnymore = cannotBeExtendedAnymore;
   }
 
   public String getNote() {
