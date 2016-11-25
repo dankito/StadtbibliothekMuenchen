@@ -3,6 +3,7 @@ package net.dankito.stadtbibliothekmuenchen.di;
 import android.app.Activity;
 
 import net.dankito.stadtbibliothekmuenchen.StadtbibliothekMuenchenClient;
+import net.dankito.stadtbibliothekmuenchen.TestDataStadtbibliothekMuenchenClient;
 import net.dankito.stadtbibliothekmuenchen.model.UserSettings;
 import net.dankito.stadtbibliothekmuenchen.util.web.IWebClient;
 import net.dankito.stadtbibliothekmuenchen.util.web.OkHttpWebClient;
@@ -47,7 +48,7 @@ public class AndroidDiContainer {
   @Provides
   @Singleton
   public StadtbibliothekMuenchenClient provideStadtbibliothekMuenchenClient(IWebClient webClient) {
-    return new StadtbibliothekMuenchenClient(webClient);
+    return new TestDataStadtbibliothekMuenchenClient(webClient);
   }
 
 }
