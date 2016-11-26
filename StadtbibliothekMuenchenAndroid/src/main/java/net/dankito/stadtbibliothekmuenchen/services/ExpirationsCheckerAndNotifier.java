@@ -71,6 +71,8 @@ public class ExpirationsCheckerAndNotifier {
   }
 
   protected void checkingBorrowsStateCompleted(ExtendAllBorrowsResult result) {
+    notificationsService.dismissNotification(CHECKING_EXPIRATIONS_INDICATOR_NOTIFICATION_TAG);
+
     if(result.isSuccessful()) {
       retrievedExpirations(result.getBorrows().getExpirations());
     }
