@@ -44,6 +44,19 @@ public class AlarmManagerCronService extends BroadcastReceiver implements ICronS
   }
 
 
+  @Override
+  public void onReceive(Context context, Intent intent) {
+    int tokenNumber = intent.getIntExtra(CRON_JOB_TOKEN_NUMBER_EXTRA_NAME, -1);
+    log.info("Received intent for CronJob with token number " + tokenNumber);
+
+    CronJobInfo cronJobInfo = startedJobs.get(tokenNumber);
+    if(cronJobInfo != null && cronJobInfo.getRunnableToExecute() != null) {
+      Runnable runnableToExecute = cronJobInfo.getRunnableToExecute();
+      runnableToExecute.run();
+    }
+  }
+
+
   /**
    *
    * @param periodicalCheckTime
@@ -51,7 +64,7 @@ public class AlarmManagerCronService extends BroadcastReceiver implements ICronS
    * @return The cron job token number to uniquely identify started cron job
    */
   public int startPeriodicalJob(Calendar periodicalCheckTime, Runnable runnableToExecute) {
-    AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+    AlarmManager alarmManager = getAlarmManager();
     int tokenNumber = NextCronJobTokenNumber++;
 
     Intent intent = new Intent(context, AlarmManagerCronService.class);
@@ -80,15 +93,27 @@ public class AlarmManagerCronService extends BroadcastReceiver implements ICronS
     return tokenNumber;
   }
 
-  @Override
-  public void onReceive(Context context, Intent intent) {
-    int tokenNumber = intent.getIntExtra(CRON_JOB_TOKEN_NUMBER_EXTRA_NAME, -1);
-    log.info("Received intent for CronJob with token number " + tokenNumber);
 
-    CronJobInfo cronJobInfo = startedJobs.get(tokenNumber);
-    if(cronJobInfo != null && cronJobInfo.getRunnableToExecute() != null) {
-      Runnable runnableToExecute = cronJobInfo.getRunnableToExecute();
-      runnableToExecute.run();
+  public boolean cancelPeriodicalJob(int cronJobTokenNumber) {
+    log.info("Trying to cancel cron job with token number " + cronJobTokenNumber);
+    CronJobInfo cronJobInfo = startedJobs.remove(cronJobTokenNumber);
+
+    if(cronJobInfo != null && cronJobInfo.getPendingIntent() != null) {
+      PendingIntent pendingIntent = cronJobInfo.getPendingIntent();
+      AlarmManager alarmManager = getAlarmManager();
+
+      alarmManager.cancel(pendingIntent);
+      log.info("Cancelled cron job with token number " + cronJobTokenNumber);
+      return true;
     }
+
+    log.warn("No cron job found for token number " + cronJobTokenNumber);
+    return false;
   }
+
+
+  protected AlarmManager getAlarmManager() {
+    return (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+  }
+
 }

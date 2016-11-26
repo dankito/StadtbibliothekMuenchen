@@ -10,4 +10,6 @@ public interface ICronService {
 
   int startPeriodicalJob(Calendar periodicalCheckTime, Runnable runnableToExecute);
 
+  boolean cancelPeriodicalJob(int cronJobTokenNumber);
+
 }
