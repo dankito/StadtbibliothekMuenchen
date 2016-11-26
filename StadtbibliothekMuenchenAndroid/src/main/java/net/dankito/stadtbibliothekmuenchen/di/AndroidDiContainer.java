@@ -2,11 +2,12 @@ package net.dankito.stadtbibliothekmuenchen.di;
 
 import android.app.Activity;
 
+import net.dankito.stadtbibliothekmuenchen.model.UserSettings;
 import net.dankito.stadtbibliothekmuenchen.services.BorrowExpirationCalculator;
+import net.dankito.stadtbibliothekmuenchen.services.ExpirationsCheckerAndNotifier;
 import net.dankito.stadtbibliothekmuenchen.services.NotificationsService;
 import net.dankito.stadtbibliothekmuenchen.services.StadtbibliothekMuenchenClient;
 import net.dankito.stadtbibliothekmuenchen.services.TestDataStadtbibliothekMuenchenClient;
-import net.dankito.stadtbibliothekmuenchen.model.UserSettings;
 import net.dankito.stadtbibliothekmuenchen.util.web.IWebClient;
 import net.dankito.stadtbibliothekmuenchen.util.web.OkHttpWebClient;
 
@@ -57,6 +58,12 @@ public class AndroidDiContainer {
   @Singleton
   public NotificationsService provideNotificationsService() {
     return new NotificationsService(getActivity());
+  }
+
+  @Provides
+  @Singleton
+  public ExpirationsCheckerAndNotifier provideExpirationsCheckerAndNotifier(NotificationsService notificationsService) {
+    return new ExpirationsCheckerAndNotifier(getActivity(), notificationsService);
   }
 
   @Provides
