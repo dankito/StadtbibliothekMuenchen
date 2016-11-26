@@ -40,60 +40,70 @@ public class TestDataStadtbibliothekMuenchenClient extends StadtbibliothekMuench
     borrow01.setTitle("Faust. Der Tragoedie erster Teil");
     borrow01.setAuthor("Johann Wolfgang von Goethe");
     borrow01.setDueOn(createTestDate(6));
+    borrow01.setMediaNumber("1");
     borrows.addBorrow(borrow01);
 
     MediaBorrow borrow02 = new MediaBorrow();
     borrow02.setTitle("Schulden");
     borrow02.setAuthor("David Graeber");
     borrow02.setDueOn(createTestDate(20));
+    borrow02.setMediaNumber("2");
     borrows.addBorrow(borrow02);
 
     MediaBorrow borrow03 = new MediaBorrow();
     borrow03.setTitle("Liebe in Zeiten der Cholera");
     borrow03.setAuthor("Gabriel Garcia Marquez");
     borrow03.setDueOn(createTestDate(-1));
+    borrow03.setMediaNumber("3");
     borrows.addBorrow(borrow03);
 
     MediaBorrow borrow04 = new MediaBorrow();
     borrow04.setTitle("Angriff auf die Freiheit");
     borrow04.setAuthor("Ilija Trojanow / Julia Zeh");
     borrow04.setDueOn(createTestDate(0));
+    borrow04.setMediaNumber("4");
     borrows.addBorrow(borrow04);
 
     MediaBorrow borrow05 = new MediaBorrow();
     borrow05.setTitle("Befreiung vom Überfluss. Auf dem Weg in die Postwachstumsökonomie");
     borrow05.setAuthor("Niko Paech");
     borrow05.setDueOn(createTestDate(14));
+    borrow05.setMediaNumber("5");
     borrows.addBorrow(borrow05);
 
     MediaBorrow borrow06 = new MediaBorrow();
     borrow06.setTitle("Gullivers Reisen");
     borrow06.setAuthor("Jonathan Swift");
     borrow06.setDueOn(createTestDate(8));
+    borrow06.setMediaNumber("6");
     borrows.addBorrow(borrow06);
 
     MediaBorrow borrow07 = new MediaBorrow();
     borrow07.setTitle("Canary Row");
     borrow07.setAuthor("John Steinbeck");
     borrow07.setDueOn(createTestDate(2));
+    borrow07.setMediaNumber("7");
     borrows.addBorrow(borrow07);
 
     MediaBorrow borrow08 = new MediaBorrow();
     borrow08.setTitle("Eine Geschichte des 19. Jahrhunderts");
     borrow08.setAuthor("Jürgen Osterhammel");
     borrow08.setDueOn(createTestDate(-5));
+    borrow08.setMediaNumber("8");
     borrows.addBorrow(borrow08);
 
     MediaBorrow borrow09 = new MediaBorrow();
     borrow09.setTitle("Kritik der reinen Vernunft");
     borrow09.setAuthor("Immanuel Kant");
     borrow09.setDueOn(createTestDate(5));
+    borrow09.setMediaNumber("9");
     borrows.addBorrow(borrow09);
 
     MediaBorrow borrow10 = new MediaBorrow();
     borrow10.setTitle("Liebe");
     borrow10.setAuthor("Marieke");
     borrow10.setDueOn(createTestDate(17));
+    borrow10.setMediaNumber("10");
     borrows.addBorrow(borrow10);
 
     borrows.setExpirations(borrowExpirationCalculator.calculateExpirations(borrows, userSettings));
