@@ -9,6 +9,10 @@ import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.NotificationCompat;
 
 import net.dankito.stadtbibliothekmuenchen.MainActivity;
+import net.dankito.stadtbibliothekmuenchen.model.NotificationInfo;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by ganymed on 26/11/16.
@@ -16,7 +20,9 @@ import net.dankito.stadtbibliothekmuenchen.MainActivity;
 
 public class NotificationsService {
 
-  protected static int nextRequestCode = 1;
+  protected static int nextNotificationId = 1;
+
+  protected static Map<String, NotificationInfo> currentlyShowingNotifications = new ConcurrentHashMap<>();
 
 
   protected Context context;
@@ -35,7 +41,14 @@ public class NotificationsService {
     NotificationManager notificationManager = getNotificationManager();
 
     Intent intent = new Intent(context, MainActivity.class);
-    int requestCode = nextRequestCode++;
+
+    int notificationId;
+    if(tag != null && currentlyShowingNotifications.containsKey(tag)) {
+      notificationId = currentlyShowingNotifications.get(tag).getNotificationId();
+    }
+    else {
+      notificationId = nextNotificationId++;
+    }
 
     // The stack builder object will contain an artificial back stack for the started Activity.
     // This ensures that navigating backward from the Activity leads out of your application to the Home screen.
@@ -45,21 +58,23 @@ public class NotificationsService {
     // Adds the Intent that starts the Activity to the top of the stack
     stackBuilder.addNextIntent(intent);
 
-    PendingIntent pendingIntent = stackBuilder.getPendingIntent(requestCode, PendingIntent.FLAG_UPDATE_CURRENT);
-//    PendingIntent pendingIntent = PendingIntent.getActivity(context, requestCode, intent, 0);
+    PendingIntent pendingIntent = stackBuilder.getPendingIntent(notificationId, PendingIntent.FLAG_UPDATE_CURRENT);
+//    PendingIntent pendingIntent = PendingIntent.getActivity(context, notificationId, intent, 0);
 
     Notification notification = new NotificationCompat.Builder(context)
         .setContentTitle(title)
         .setContentText(text)
         .setSmallIcon(iconId)
         .setContentIntent(pendingIntent)
+        .setAutoCancel(true)
         .build();
 
     if(tag != null) {
-      notificationManager.notify(tag, requestCode, notification);
+      notificationManager.notify(tag, notificationId, notification);
+      currentlyShowingNotifications.put(tag, new NotificationInfo(notificationId, tag));
     }
     else {
-      notificationManager.notify(requestCode, notification);
+      notificationManager.notify(notificationId, notification);
     }
   }
 
