@@ -19,14 +19,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class AlarmManagerCronService extends BroadcastReceiver implements ICronService {
 
-  protected static final String REQUEST_CODE_EXTRA_NAME = "RequestCode";
+  protected static final String CRON_JOB_TOKEN_NUMBER_EXTRA_NAME = "CronJobTokenNumber";
 
   private static final Logger log = LoggerFactory.getLogger(AlarmManagerCronService.class);
 
 
   protected static Map<Integer, Runnable> startedJobs = new ConcurrentHashMap<>();
 
-  protected static int nextRequestCode = 1;
+  protected static int NextCronJobTokenNumber = 1;
 
 
   protected Context context;
@@ -44,11 +44,11 @@ public class AlarmManagerCronService extends BroadcastReceiver implements ICronS
 
   public void startPeriodicalJob(Calendar periodicalCheckTime, Runnable runnableToExecute) {
     AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-    int requestCode = nextRequestCode++;
+    int tokenNumber = NextCronJobTokenNumber++;
 
     Intent intent = new Intent(context, AlarmManagerCronService.class);
-    intent.putExtra(REQUEST_CODE_EXTRA_NAME, requestCode);
-    PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    intent.putExtra(CRON_JOB_TOKEN_NUMBER_EXTRA_NAME, tokenNumber);
+    PendingIntent pendingIntent = PendingIntent.getBroadcast(context, tokenNumber, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
     Calendar calendar = Calendar.getInstance();
     calendar.setTimeInMillis(System.currentTimeMillis());
@@ -65,17 +65,17 @@ public class AlarmManagerCronService extends BroadcastReceiver implements ICronS
     alarmManager.setInexactRepeating(AlarmManager.RTC, calendar.getTimeInMillis(),
         AlarmManager.INTERVAL_DAY, pendingIntent);
 
-    startedJobs.put(requestCode, runnableToExecute);
+    startedJobs.put(tokenNumber, runnableToExecute);
 
-    log.info("Started a periodical cron job for " + calendar.getTime());
+    log.info("Started a periodical cron job with token number " + tokenNumber + " for " + calendar.getTime());
   }
 
   @Override
   public void onReceive(Context context, Intent intent) {
-    log.info("Received intent for CronJob");
+    int tokenNumber = intent.getIntExtra(CRON_JOB_TOKEN_NUMBER_EXTRA_NAME, -1);
+    log.info("Received intent for CronJob with token number " + tokenNumber);
 
-    int requestCode = intent.getIntExtra(REQUEST_CODE_EXTRA_NAME, -1);
-    Runnable runnableToExecute = startedJobs.get(requestCode);
+    Runnable runnableToExecute = startedJobs.get(tokenNumber);
     if(runnableToExecute != null) {
       runnableToExecute.run();
     }
