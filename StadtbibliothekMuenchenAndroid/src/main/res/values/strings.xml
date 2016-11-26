@@ -10,6 +10,7 @@
 
     <string name="notification_borrow_has_expired">Expired borrow</string>
     <string name="notification_is_going_to_expire_soon" formatted="false">Borrow expires in %d days</string>
+    <string name="notification_could_not_check_expirations">Could not check expirations</string>
 
     <string name="error_title_could_not_get_borrows">Could not get borrows</string>
     <string name="error_title_could_not_do_simple_search">Searching for %s failed</string>

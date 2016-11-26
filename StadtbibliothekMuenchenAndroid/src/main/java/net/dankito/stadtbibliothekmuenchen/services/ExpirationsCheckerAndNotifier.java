@@ -19,6 +19,8 @@ public class ExpirationsCheckerAndNotifier {
 
   protected static final String CHECKING_EXPIRATIONS_INDICATOR_NOTIFICATION_TAG = "CheckingExpirations";
 
+  protected static final String CHECKING_EXPIRATIONS_FAILED_NOTIFICATION_TAG = "CheckingExpirationsFailed";
+
 
   protected Context context;
 
@@ -62,11 +64,21 @@ public class ExpirationsCheckerAndNotifier {
       stadtbibliothekMuenchenClient.extendAllBorrowsAndGetBorrowsStateAsync(new ExtendAllBorrowsCallback() {
         @Override
         public void completed(ExtendAllBorrowsResult result) {
-          if(result.isSuccessful()) {
-            retrievedExpirations(result.getBorrows().getExpirations());
-          }
+          checkingBorrowsStateCompleted(result);
         }
       });
+    }
+  }
+
+  protected void checkingBorrowsStateCompleted(ExtendAllBorrowsResult result) {
+    if(result.isSuccessful()) {
+      retrievedExpirations(result.getBorrows().getExpirations());
+    }
+    else {
+      String title = context.getResources().getString(R.string.notification_could_not_check_expirations);
+      String text = result.getError();
+      int iconId = getErrorIcon();
+      notificationsService.showNotification(title, text, iconId, CHECKING_EXPIRATIONS_FAILED_NOTIFICATION_TAG);
     }
   }
 
@@ -93,7 +105,7 @@ public class ExpirationsCheckerAndNotifier {
     String title = context.getResources().getString(R.string.notification_borrow_has_expired);
     String text = expiredBorrow.getTitle();
 
-    int iconId = context.getResources().getIdentifier("@android:drawable/stat_notify_error", null, null);
+    int iconId = getErrorIcon();
 
     showNotification(expiredBorrow, title, text, iconId);
   }
@@ -102,7 +114,7 @@ public class ExpirationsCheckerAndNotifier {
     String title = context.getResources().getString(R.string.notification_is_going_to_expire_soon, calculateInHowManyDaysBorrowExpires(soonExpiringBorrow));
     String text = soonExpiringBorrow.getTitle();
 
-    int iconId = context.getResources().getIdentifier("@android:drawable/stat_sys_warning", null, null);
+    int iconId = getWarningIcon();
 
     showNotification(soonExpiringBorrow, title, text, iconId);
   }
@@ -117,6 +129,15 @@ public class ExpirationsCheckerAndNotifier {
 
   protected void showNotification(MediaBorrow borrow, String title, String text, int iconId) {
     notificationsService.showNotification(title, text, iconId, borrow.getMediaNumber());
+  }
+
+
+  protected int getErrorIcon() {
+    return context.getResources().getIdentifier("@android:drawable/stat_notify_error", null, null);
+  }
+
+  protected int getWarningIcon() {
+    return context.getResources().getIdentifier("@android:drawable/stat_sys_warning", null, null);
   }
 
 }

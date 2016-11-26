@@ -11,6 +11,7 @@
 
     <string name="notification_borrow_has_expired">Leihfrist überschritten</string>
     <string name="notification_is_going_to_expire_soon" formatted="false">Leihe endet in %d Tagen</string>
+    <string name="notification_could_not_check_expirations">Leihfristen konnten nicht überprüft werden</string>
 
     <string name="error_title_could_not_get_borrows">Ausleihen konnten nicht ermittelt werden</string>
     <string name="error_title_could_not_do_simple_search">Suche nach %s fehlgeschlage</string>
