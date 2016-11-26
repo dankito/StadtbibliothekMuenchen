@@ -10,6 +10,7 @@ import android.widget.ListView;
 
 import net.dankito.stadtbibliothekmuenchen.MainActivity;
 import net.dankito.stadtbibliothekmuenchen.R;
+import net.dankito.stadtbibliothekmuenchen.services.NotificationsService;
 import net.dankito.stadtbibliothekmuenchen.services.StadtbibliothekMuenchenClient;
 import net.dankito.stadtbibliothekmuenchen.adapter.BorrowsAdapter;
 import net.dankito.stadtbibliothekmuenchen.model.UserSettings;
@@ -27,6 +28,9 @@ public class TabBorrowsFragment extends Fragment {
 
   @Inject
   protected StadtbibliothekMuenchenClient stadtbibliothekMuenchenClient;
+
+  @Inject
+  protected NotificationsService notificationsService;
 
   @Inject
   protected UserSettings userSettings;
@@ -57,13 +61,21 @@ public class TabBorrowsFragment extends Fragment {
       @Override
       public void completed(ExtendAllBorrowsResult result) {
         if(result.isSuccessful()) {
-          borrowsAdapter.setBorrowsThreadSafe(result.getBorrows());
+          retrievedExtendAllBorrowsResult(result);
         }
         else {
           showErrorMessageThreadSafe(result.getError(), getActivity().getString(R.string.error_title_could_not_get_borrows));
         }
       }
     });
+  }
+
+  protected void retrievedExtendAllBorrowsResult(ExtendAllBorrowsResult result) {
+    borrowsAdapter.setBorrowsThreadSafe(result.getBorrows());
+
+    if(userSettings.isShowSystemNotificationsOnExpirationEnabled()) {
+      notificationsService.showSystemNotificationForBorrowExpirations(result.getBorrows().getExpirations());
+    }
   }
 
 
