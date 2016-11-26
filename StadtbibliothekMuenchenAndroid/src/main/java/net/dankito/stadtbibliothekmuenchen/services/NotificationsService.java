@@ -79,6 +79,19 @@ public class NotificationsService {
   }
 
 
+  public boolean dismissNotification(String notificationTag) {
+    if(notificationTag != null && currentlyShowingNotifications.containsKey(notificationTag)) {
+      NotificationInfo notificationInfo = currentlyShowingNotifications.remove(notificationTag);
+      NotificationManager notificationManager = getNotificationManager();
+
+      notificationManager.cancel(notificationInfo.getTag(), notificationInfo.getNotificationId());
+      return true;
+    }
+
+    return false;
+  }
+
+
   protected NotificationManager getNotificationManager() {
     return (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
   }
