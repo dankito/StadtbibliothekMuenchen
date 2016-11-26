@@ -9,7 +9,6 @@ import net.dankito.stadtbibliothekmuenchen.services.ExpirationsCheckerAndNotifie
 import net.dankito.stadtbibliothekmuenchen.services.ICronService;
 import net.dankito.stadtbibliothekmuenchen.services.NotificationsService;
 import net.dankito.stadtbibliothekmuenchen.services.StadtbibliothekMuenchenClient;
-import net.dankito.stadtbibliothekmuenchen.services.TestDataStadtbibliothekMuenchenClient;
 import net.dankito.stadtbibliothekmuenchen.util.web.IWebClient;
 import net.dankito.stadtbibliothekmuenchen.util.web.OkHttpWebClient;
 
@@ -78,7 +77,7 @@ public class AndroidDiContainer {
   @Provides
   @Singleton
   public StadtbibliothekMuenchenClient provideStadtbibliothekMuenchenClient(IWebClient webClient, BorrowExpirationCalculator borrowExpirationCalculator, UserSettings userSettings) {
-    return new TestDataStadtbibliothekMuenchenClient(webClient, borrowExpirationCalculator, userSettings);
+    return new StadtbibliothekMuenchenClient(webClient, borrowExpirationCalculator, userSettings);
   }
 
 }
