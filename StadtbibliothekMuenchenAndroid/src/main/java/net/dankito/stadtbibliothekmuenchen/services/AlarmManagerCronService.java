@@ -6,6 +6,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import net.dankito.stadtbibliothekmuenchen.model.CronJobInfo;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +26,7 @@ public class AlarmManagerCronService extends BroadcastReceiver implements ICronS
   private static final Logger log = LoggerFactory.getLogger(AlarmManagerCronService.class);
 
 
-  protected static Map<Integer, Runnable> startedJobs = new ConcurrentHashMap<>();
+  protected static Map<Integer, CronJobInfo> startedJobs = new ConcurrentHashMap<>();
 
   protected static int NextCronJobTokenNumber = 1;
 
@@ -71,7 +73,7 @@ public class AlarmManagerCronService extends BroadcastReceiver implements ICronS
     alarmManager.setInexactRepeating(AlarmManager.RTC, calendar.getTimeInMillis(),
         AlarmManager.INTERVAL_DAY, pendingIntent);
 
-    startedJobs.put(tokenNumber, runnableToExecute);
+    startedJobs.put(tokenNumber, new CronJobInfo(runnableToExecute, pendingIntent));
 
     log.info("Started a periodical cron job with token number " + tokenNumber + " for " + calendar.getTime());
 
@@ -83,8 +85,9 @@ public class AlarmManagerCronService extends BroadcastReceiver implements ICronS
     int tokenNumber = intent.getIntExtra(CRON_JOB_TOKEN_NUMBER_EXTRA_NAME, -1);
     log.info("Received intent for CronJob with token number " + tokenNumber);
 
-    Runnable runnableToExecute = startedJobs.get(tokenNumber);
-    if(runnableToExecute != null) {
+    CronJobInfo cronJobInfo = startedJobs.get(tokenNumber);
+    if(cronJobInfo != null && cronJobInfo.getRunnableToExecute() != null) {
+      Runnable runnableToExecute = cronJobInfo.getRunnableToExecute();
       runnableToExecute.run();
     }
   }
