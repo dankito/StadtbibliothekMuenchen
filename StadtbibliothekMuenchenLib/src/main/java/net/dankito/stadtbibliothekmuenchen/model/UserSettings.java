@@ -10,6 +10,8 @@ public class UserSettings {
 
   protected String password;
 
+  protected boolean isShowSystemNotificationsOnExpirationEnabled = true;
+
   protected boolean isFirstWarningEnabled = false;
 
   protected int countDaysBeforeExpirationForeFirstWarning = 7;
@@ -42,6 +44,14 @@ public class UserSettings {
 
   public void setPassword(String password) {
     this.password = password;
+  }
+
+  public boolean isShowSystemNotificationsOnExpirationEnabled() {
+    return isShowSystemNotificationsOnExpirationEnabled;
+  }
+
+  public void setShowSystemNotificationsOnExpirationEnabled(boolean showSystemNotificationsOnExpirationEnabled) {
+    isShowSystemNotificationsOnExpirationEnabled = showSystemNotificationsOnExpirationEnabled;
   }
 
   public boolean isFirstWarningEnabled() {
