@@ -1,12 +1,10 @@
-package net.dankito.stadtbibliothekmuenchen.service;
+package net.dankito.stadtbibliothekmuenchen.services;
 
 import net.dankito.stadtbibliothekmuenchen.model.MediaBorrow;
 import net.dankito.stadtbibliothekmuenchen.model.MediaBorrows;
 import net.dankito.stadtbibliothekmuenchen.model.SearchResult;
 import net.dankito.stadtbibliothekmuenchen.model.SearchResults;
 import net.dankito.stadtbibliothekmuenchen.model.UserSettings;
-import net.dankito.stadtbibliothekmuenchen.services.BorrowExpirationCalculator;
-import net.dankito.stadtbibliothekmuenchen.services.StadtbibliothekMuenchenClient;
 import net.dankito.stadtbibliothekmuenchen.util.StringUtils;
 import net.dankito.stadtbibliothekmuenchen.util.web.OkHttpWebClient;
 import net.dankito.stadtbibliothekmuenchen.util.web.callbacks.ExtendAllBorrowsCallback;
