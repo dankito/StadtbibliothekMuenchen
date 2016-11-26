@@ -17,6 +17,9 @@ import java.util.Date;
 
 public class ExpirationsCheckerAndNotifier {
 
+  protected static final String CHECKING_EXPIRATIONS_INDICATOR_NOTIFICATION_TAG = "CheckingExpirations";
+
+
   protected Context context;
 
   protected NotificationsService notificationsService;
@@ -52,7 +55,7 @@ public class ExpirationsCheckerAndNotifier {
   protected void checkForExpirations() {
     if(context != null) {
       int iconId = context.getResources().getIdentifier("@android:drawable/stat_sys_phone_call_forward", null, null);
-      notificationsService.showNotification("Überprüfe Leihfristen", "Bin hier hart am Arbeiten, aufgeweckt vom AlarmManager", iconId);
+      notificationsService.showNotification("Überprüfe Leihfristen", "Bin hier hart am Arbeiten", iconId, CHECKING_EXPIRATIONS_INDICATOR_NOTIFICATION_TAG);
     }
 
     if(stadtbibliothekMuenchenClient != null) {
