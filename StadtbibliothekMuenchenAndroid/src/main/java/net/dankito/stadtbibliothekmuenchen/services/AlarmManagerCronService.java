@@ -42,7 +42,13 @@ public class AlarmManagerCronService extends BroadcastReceiver implements ICronS
   }
 
 
-  public void startPeriodicalJob(Calendar periodicalCheckTime, Runnable runnableToExecute) {
+  /**
+   *
+   * @param periodicalCheckTime
+   * @param runnableToExecute
+   * @return The cron job token number to uniquely identify started cron job
+   */
+  public int startPeriodicalJob(Calendar periodicalCheckTime, Runnable runnableToExecute) {
     AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
     int tokenNumber = NextCronJobTokenNumber++;
 
@@ -68,6 +74,8 @@ public class AlarmManagerCronService extends BroadcastReceiver implements ICronS
     startedJobs.put(tokenNumber, runnableToExecute);
 
     log.info("Started a periodical cron job with token number " + tokenNumber + " for " + calendar.getTime());
+
+    return tokenNumber;
   }
 
   @Override

@@ -8,6 +8,6 @@ import java.util.Calendar;
 
 public interface ICronService {
 
-  void startPeriodicalJob(Calendar periodicalCheckTime, Runnable runnableToExecute);
+  int startPeriodicalJob(Calendar periodicalCheckTime, Runnable runnableToExecute);
 
 }
