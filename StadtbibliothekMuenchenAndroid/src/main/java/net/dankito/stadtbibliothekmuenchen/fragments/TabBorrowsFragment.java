@@ -57,7 +57,7 @@ public class TabBorrowsFragment extends Fragment {
 
 
   protected void getBorrows() {
-    stadtbibliothekMuenchenClient.extendAllBorrowsAndGetBorrowsStateAsync(userSettings.getIdentityCardNumber(), userSettings.getPassword(), new ExtendAllBorrowsCallback() {
+    stadtbibliothekMuenchenClient.extendAllBorrowsAndGetBorrowsStateAsync(new ExtendAllBorrowsCallback() {
       @Override
       public void completed(ExtendAllBorrowsResult result) {
         if(result.isSuccessful()) {

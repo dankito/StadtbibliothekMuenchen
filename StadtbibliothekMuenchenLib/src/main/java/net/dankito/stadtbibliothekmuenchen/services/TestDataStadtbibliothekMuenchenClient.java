@@ -29,7 +29,7 @@ public class TestDataStadtbibliothekMuenchenClient extends StadtbibliothekMuench
 
 
   @Override
-  public void extendAllBorrowsAndGetBorrowsStateAsync(String idCardNumber, String password, ExtendAllBorrowsCallback callback) {
+  public void extendAllBorrowsAndGetBorrowsStateAsync(ExtendAllBorrowsCallback callback) {
     callback.completed(new ExtendAllBorrowsResult(createTestMediaBorrows()));
   }
 

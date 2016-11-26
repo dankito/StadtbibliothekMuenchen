@@ -53,7 +53,11 @@ public class StadtbibliothekMuenchenClientTest {
   public void setUp() throws Exception {
     this.testDataProperties = loadTestDataProperties();
 
-    this.underTest = new StadtbibliothekMuenchenClient(new OkHttpWebClient(), new BorrowExpirationCalculator(), new UserSettings());
+    UserSettings userSettings = new UserSettings();
+    userSettings.setIdentityCardNumber(getTestUserIdentityCardNumber());
+    userSettings.setPassword(getTestUserPassword());
+
+    this.underTest = new StadtbibliothekMuenchenClient(new OkHttpWebClient(), new BorrowExpirationCalculator(), userSettings);
   }
 
   @After
@@ -66,7 +70,7 @@ public class StadtbibliothekMuenchenClientTest {
     final List<LoginResult> resultList = new ArrayList<>();
     final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-    underTest.loginAsync(getTestUserIdentityCardNumber(), getTestUserPassword(), new LoginCallback() {
+    underTest.loginAsync(new LoginCallback() {
       @Override
       public void completed(LoginResult result) {
         resultList.add(result);
@@ -87,7 +91,7 @@ public class StadtbibliothekMuenchenClientTest {
     final List<ExtendAllBorrowsResult> resultList = new ArrayList<>();
     final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-    underTest.extendAllBorrowsAndGetBorrowsStateAsync(getTestUserIdentityCardNumber(), getTestUserPassword(), new ExtendAllBorrowsCallback() {
+    underTest.extendAllBorrowsAndGetBorrowsStateAsync(new ExtendAllBorrowsCallback() {
       @Override
       public void completed(ExtendAllBorrowsResult result) {
         resultList.add(result);
