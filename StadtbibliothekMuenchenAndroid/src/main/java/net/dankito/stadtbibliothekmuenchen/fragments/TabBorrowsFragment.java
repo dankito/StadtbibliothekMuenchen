@@ -10,10 +10,11 @@ import android.widget.ListView;
 
 import net.dankito.stadtbibliothekmuenchen.MainActivity;
 import net.dankito.stadtbibliothekmuenchen.R;
-import net.dankito.stadtbibliothekmuenchen.services.NotificationsService;
-import net.dankito.stadtbibliothekmuenchen.services.StadtbibliothekMuenchenClient;
 import net.dankito.stadtbibliothekmuenchen.adapter.BorrowsAdapter;
 import net.dankito.stadtbibliothekmuenchen.model.UserSettings;
+import net.dankito.stadtbibliothekmuenchen.services.CronService;
+import net.dankito.stadtbibliothekmuenchen.services.ExpirationsCheckerAndNotifier;
+import net.dankito.stadtbibliothekmuenchen.services.StadtbibliothekMuenchenClient;
 import net.dankito.stadtbibliothekmuenchen.util.AlertHelper;
 import net.dankito.stadtbibliothekmuenchen.util.web.callbacks.ExtendAllBorrowsCallback;
 import net.dankito.stadtbibliothekmuenchen.util.web.responses.ExtendAllBorrowsResult;
@@ -30,10 +31,13 @@ public class TabBorrowsFragment extends Fragment {
   protected StadtbibliothekMuenchenClient stadtbibliothekMuenchenClient;
 
   @Inject
-  protected NotificationsService notificationsService;
+  protected ExpirationsCheckerAndNotifier expirationsCheckerAndNotifier;
 
   @Inject
   protected UserSettings userSettings;
+
+  @Inject
+  protected CronService cronService;
 
   protected BorrowsAdapter borrowsAdapter;
 
@@ -74,7 +78,7 @@ public class TabBorrowsFragment extends Fragment {
     borrowsAdapter.setBorrowsThreadSafe(result.getBorrows());
 
     if(userSettings.isShowSystemNotificationsOnExpirationEnabled()) {
-      notificationsService.showSystemNotificationForBorrowExpirations(result.getBorrows().getExpirations());
+      expirationsCheckerAndNotifier.retrievedExpirations(result.getBorrows().getExpirations());
     }
   }
 

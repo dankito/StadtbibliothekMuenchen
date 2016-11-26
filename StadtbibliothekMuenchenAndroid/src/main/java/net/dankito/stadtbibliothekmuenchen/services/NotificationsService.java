@@ -9,11 +9,6 @@ import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.NotificationCompat;
 
 import net.dankito.stadtbibliothekmuenchen.MainActivity;
-import net.dankito.stadtbibliothekmuenchen.R;
-import net.dankito.stadtbibliothekmuenchen.model.BorrowExpirations;
-import net.dankito.stadtbibliothekmuenchen.model.MediaBorrow;
-
-import java.util.Date;
 
 /**
  * Created by ganymed on 26/11/16.
@@ -32,52 +27,13 @@ public class NotificationsService {
   }
 
 
-  public void showSystemNotificationForBorrowExpirations(BorrowExpirations expirations) {
-    NotificationManager notificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
-
-    for(MediaBorrow expiredBorrow : expirations.getAlreadyExpiredBorrows()) {
-      showAlreadyExpiredNotification(expiredBorrow, notificationManager);
-    }
-
-    for(MediaBorrow soonExpiringBorrow : expirations.getBorrowExpirationsForThirdWarning()) {
-      showIsGoingToExpireSoonNotification(soonExpiringBorrow, notificationManager);
-    }
-
-    for(MediaBorrow soonExpiringBorrow : expirations.getBorrowExpirationsForSecondWarning()) {
-      showIsGoingToExpireSoonNotification(soonExpiringBorrow, notificationManager);
-    }
-
-    for(MediaBorrow soonExpiringBorrow : expirations.getBorrowExpirationsForFirstWarning()) {
-      showIsGoingToExpireSoonNotification(soonExpiringBorrow, notificationManager);
-    }
+  public void showNotification(String title, String text, int iconId) {
+    showNotification(title, text, iconId, null);
   }
 
-  protected void showAlreadyExpiredNotification(MediaBorrow expiredBorrow, NotificationManager notificationManager) {
-    String title = context.getResources().getString(R.string.notification_borrow_has_expired);
-    String text = expiredBorrow.getTitle();
+  public void showNotification(String title, String text, int iconId, String tag) {
+    NotificationManager notificationManager = getNotificationManager();
 
-    int iconId = context.getResources().getIdentifier("@android:drawable/stat_notify_error", null, null);
-
-    showNotification(expiredBorrow, title, text, iconId, notificationManager);
-  }
-
-  protected void showIsGoingToExpireSoonNotification(MediaBorrow soonExpiringBorrow, NotificationManager notificationManager) {
-    String title = context.getResources().getString(R.string.notification_is_going_to_expire_soon, calculateInHowManyDaysBorrowExpires(soonExpiringBorrow));
-    String text = soonExpiringBorrow.getTitle();
-
-    int iconId = context.getResources().getIdentifier("@android:drawable/stat_sys_warning", null, null);
-
-    showNotification(soonExpiringBorrow, title, text, iconId, notificationManager);
-  }
-
-  protected int calculateInHowManyDaysBorrowExpires(MediaBorrow borrow) {
-    Date today = new Date();
-    long timeTillExpiration = borrow.getDueOn().getTime() - today.getTime();
-
-    return (int)(timeTillExpiration / (24 * 60 * 60 * 1000)) + 1;
-  }
-
-  protected void showNotification(MediaBorrow borrow, String title, String text, int iconId, NotificationManager notificationManager) {
     Intent intent = new Intent(context, MainActivity.class);
     int requestCode = nextRequestCode++;
 
@@ -99,6 +55,17 @@ public class NotificationsService {
         .setContentIntent(pendingIntent)
         .build();
 
-    notificationManager.notify(borrow.getMediaNumber(), requestCode, notification);
+    if(tag != null) {
+      notificationManager.notify(tag, requestCode, notification);
+    }
+    else {
+      notificationManager.notify(requestCode, notification);
+    }
   }
+
+
+  protected NotificationManager getNotificationManager() {
+    return (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+  }
+
 }
