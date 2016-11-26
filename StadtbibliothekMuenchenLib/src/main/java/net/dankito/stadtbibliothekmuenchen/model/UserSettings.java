@@ -1,5 +1,7 @@
 package net.dankito.stadtbibliothekmuenchen.model;
 
+import java.util.Calendar;
+
 /**
  * Created by ganymed on 25/11/16.
  */
@@ -23,6 +25,8 @@ public class UserSettings {
   protected boolean isThirdWarningEnabled = true;
 
   protected int countDaysBeforeExpirationForThirdWarning = 1;
+
+  protected Calendar periodicalBorrowsExpirationCheckTime = null;
 
 
   public UserSettings() {
@@ -100,6 +104,18 @@ public class UserSettings {
 
   public void setCountDaysBeforeExpirationForThirdWarning(int countDaysBeforeExpirationForThirdWarning) {
     this.countDaysBeforeExpirationForThirdWarning = countDaysBeforeExpirationForThirdWarning;
+  }
+
+  public boolean isPeriodicalBorrowsExpirationCheckTimeSet() {
+    return getPeriodicalBorrowsExpirationCheckTime() != null;
+  }
+
+  public Calendar getPeriodicalBorrowsExpirationCheckTime() {
+    return periodicalBorrowsExpirationCheckTime;
+  }
+
+  public void setPeriodicalBorrowsExpirationCheckTime(Calendar periodicalBorrowsExpirationCheckTime) {
+    this.periodicalBorrowsExpirationCheckTime = periodicalBorrowsExpirationCheckTime;
   }
 
 }
