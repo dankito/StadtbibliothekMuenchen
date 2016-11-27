@@ -1,6 +1,7 @@
 package net.dankito.stadtbibliothekmuenchen.di;
 
 import net.dankito.stadtbibliothekmuenchen.MainActivity;
+import net.dankito.stadtbibliothekmuenchen.activities.SettingsActivity;
 import net.dankito.stadtbibliothekmuenchen.fragments.TabBorrowsFragment;
 import net.dankito.stadtbibliothekmuenchen.fragments.TabSearchFragment;
 
@@ -17,6 +18,8 @@ public interface AndroidDiComponent {
 
   // to update the fields in your activities
   void inject(MainActivity activity);
+
+  void inject(SettingsActivity settingsActivity);
 
   void inject(TabBorrowsFragment tabBorrowsFragment);
 
