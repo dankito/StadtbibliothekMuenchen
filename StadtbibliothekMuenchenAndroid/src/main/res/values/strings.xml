@@ -4,6 +4,7 @@
     <string name="ok">Ok</string>
 
     <string name="search">Search</string>
+    <string name="test">Test</string>
 
     <string name="tab_title_borrows">Borrows</string>
     <string name="tab_title_search">Search</string>
@@ -14,4 +15,13 @@
 
     <string name="error_title_could_not_get_borrows">Could not get borrows</string>
     <string name="error_title_could_not_do_simple_search">Searching for %s failed</string>
+
+    <string name="fragment_settings_identity_card_number">Identity card number</string>
+    <string name="fragment_settings_password">Password</string>
+    <string name="fragment_settings_hint_identity_card_number_or_password_not_set">Identity car number or password not set.\n
+        Without app cannot connect to Stadtbibliothek München Server.</string>
+    <string name="fragment_settings_testing_fritz_box_settings_failed_title">Login to FritzBox failed</string>
+    <string name="fragment_settings_testing_fritz_box_settings_succeeded">Login success, settings are correct</string>
+    <string name="fragment_setting_periodically_check_for_expired_borrows">Periodically check for expired borrows</string>
+
 </resources>

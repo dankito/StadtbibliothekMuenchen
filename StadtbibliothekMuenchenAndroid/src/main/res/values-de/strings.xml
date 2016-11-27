@@ -5,6 +5,7 @@
     <string name="ok">Ok</string>
 
     <string name="search">Suche</string>
+    <string name="test">Testen</string>
 
     <string name="tab_title_borrows">Ausleihen</string>
     <string name="tab_title_search">Suche</string>
@@ -15,4 +16,13 @@
 
     <string name="error_title_could_not_get_borrows">Ausleihen konnten nicht ermittelt werden</string>
     <string name="error_title_could_not_do_simple_search">Suche nach %s fehlgeschlage</string>
+
+    <string name="fragment_settings_identity_card_number">Ausweisnummer</string>
+    <string name="fragment_settings_password">Passwort</string>
+    <string name="fragment_settings_hint_identity_card_number_or_password_not_set">Ausweisnummer oder Passwort ist nicht gesetzt.\n
+        Ohne ist keine Verbindung zum Server der Stadtbibliothk möglich.</string>
+    <string name="fragment_settings_testing_fritz_box_settings_failed_title">Einloggen auf FritzBox fehlgeschlagen</string>
+    <string name="fragment_settings_testing_fritz_box_settings_succeeded">Einloggen erfolgreich, Einstellungen sind richtig</string>
+    <string name="fragment_setting_periodically_check_for_expired_borrows">Periodisch Leihfristenende abfragen</string>
+
 </resources>
