@@ -97,7 +97,11 @@ public class StadtbibliothekMuenchenClient {
   }
 
 
-  public void loginAsync(final LoginCallback callback) {
+  public void loginAsync(LoginCallback callback) {
+    loginAsync(userSettings.getIdentityCardNumber(), userSettings.getPassword(), callback);
+  }
+
+  public void loginAsync(final String identityCardNumber, final String password, final LoginCallback callback) {
     RequestParameters parameters = createRequestParametersWithDefaultValues(HOMEPAGE_URL);
 
     webClient.getAsync(parameters, new RequestCallback() {
@@ -109,7 +113,7 @@ public class StadtbibliothekMuenchenClient {
         else {
           StadtbibliothekMuenchenClient.this.frontPageHtml = response.getBody();
 
-          parseFrontPageAndLogin(userSettings.getIdentityCardNumber(), userSettings. getPassword(), response, callback);
+          parseFrontPageAndLogin(identityCardNumber, password, response, callback);
         }
       }
     });
