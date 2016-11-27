@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class StadtbibliothekMuenchenClientTest {
 
-  protected static final String TEST_DATA_FILENAME = "testdata.properties";
+  protected static final String TEST_DATA_FILENAME = "test_data.properties";
 
   protected static final String TEST_DATA_KEY_USER_IDENTITY_CARD_NUMBER = "test.user.identity.card.number";
 
