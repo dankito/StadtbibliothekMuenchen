@@ -10,14 +10,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import net.dankito.stadtbibliothekmuenchen.adapter.MainActivityTabsAdapter;
-import net.dankito.stadtbibliothekmuenchen.di.AndroidDiComponent;
-import net.dankito.stadtbibliothekmuenchen.di.AndroidDiContainer;
-import net.dankito.stadtbibliothekmuenchen.di.DaggerAndroidDiComponent;
 
 public class MainActivity extends AppCompatActivity {
-
-
-  protected AndroidDiComponent component;
 
   /**
    * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -38,17 +32,13 @@ public class MainActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    setupDependencyInjection();
+    injectComponents();
 
     setupUi();
   }
 
-  protected void setupDependencyInjection() {
-    component = DaggerAndroidDiComponent.builder()
-        .androidDiContainer(new AndroidDiContainer(this))
-        .build();
-
-    component.inject(this);
+  protected void injectComponents() {
+    ((StadtbibliothekMuenchenApplication)getApplicationContext()).getComponent().inject(this);
   }
 
   protected void setupUi() {
@@ -80,11 +70,6 @@ public class MainActivity extends AppCompatActivity {
     int id = item.getItemId();
 
     return super.onOptionsItemSelected(item);
-  }
-
-
-  public AndroidDiComponent getComponent() {
-    return component;
   }
 
 }

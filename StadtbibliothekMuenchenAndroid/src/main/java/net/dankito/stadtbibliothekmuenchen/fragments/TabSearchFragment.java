@@ -15,11 +15,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import net.dankito.stadtbibliothekmuenchen.MainActivity;
 import net.dankito.stadtbibliothekmuenchen.R;
-import net.dankito.stadtbibliothekmuenchen.services.StadtbibliothekMuenchenClient;
+import net.dankito.stadtbibliothekmuenchen.StadtbibliothekMuenchenApplication;
 import net.dankito.stadtbibliothekmuenchen.adapter.SearchResultsAdapter;
 import net.dankito.stadtbibliothekmuenchen.model.SearchResults;
+import net.dankito.stadtbibliothekmuenchen.services.StadtbibliothekMuenchenClient;
 import net.dankito.stadtbibliothekmuenchen.util.AlertHelper;
 import net.dankito.stadtbibliothekmuenchen.util.web.callbacks.SimpleSearchCallback;
 import net.dankito.stadtbibliothekmuenchen.util.web.responses.SimpleSearchResponse;
@@ -128,6 +128,6 @@ public class TabSearchFragment extends Fragment {
 
 
   protected void injectComponents() {
-    ((MainActivity) getActivity()).getComponent().inject(this);
+    ((StadtbibliothekMuenchenApplication) getContext().getApplicationContext()).getComponent().inject(this);
   }
 }
