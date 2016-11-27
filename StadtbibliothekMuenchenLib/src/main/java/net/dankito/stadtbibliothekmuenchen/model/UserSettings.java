@@ -1,5 +1,7 @@
 package net.dankito.stadtbibliothekmuenchen.model;
 
+import net.dankito.stadtbibliothekmuenchen.util.StringUtils;
+
 import java.util.Calendar;
 
 /**
@@ -34,12 +36,20 @@ public class UserSettings {
   }
 
 
+  public boolean isIdentityCardNumberSet() {
+    return StringUtils.isNotNullOrEmpty(getIdentityCardNumber());
+  }
+
   public String getIdentityCardNumber() {
     return identityCardNumber;
   }
 
   public void setIdentityCardNumber(String identityCardNumber) {
     this.identityCardNumber = identityCardNumber;
+  }
+
+  public boolean isPasswordSet() {
+    return StringUtils.isNotNullOrEmpty(getPassword());
   }
 
   public String getPassword() {
