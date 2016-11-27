@@ -80,7 +80,7 @@ public class TabBorrowsFragment extends Fragment {
 
 
   protected void showErrorMessageThreadSafe(String errorMessage, String errorMessageTitle) {
-    AlertHelper.showErrorMessageThreadSafe(getActivity(), errorMessage, errorMessageTitle);
+    AlertHelper.showMessageThreadSafe(getActivity(), errorMessage, errorMessageTitle);
   }
 
   protected void injectComponents() {
