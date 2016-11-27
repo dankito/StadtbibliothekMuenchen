@@ -1,5 +1,6 @@
 package net.dankito.stadtbibliothekmuenchen;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -9,9 +10,17 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import net.dankito.stadtbibliothekmuenchen.activities.SettingsActivity;
 import net.dankito.stadtbibliothekmuenchen.adapter.MainActivityTabsAdapter;
+import net.dankito.stadtbibliothekmuenchen.model.UserSettings;
+
+import javax.inject.Inject;
 
 public class MainActivity extends AppCompatActivity {
+
+
+  @Inject
+  protected UserSettings userSettings;
 
   /**
    * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -35,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
     injectComponents();
 
     setupUi();
+
+    checkIfUserSettingsAreSetUp();
   }
 
   protected void injectComponents() {
@@ -57,6 +68,12 @@ public class MainActivity extends AppCompatActivity {
     tabLayout.setupWithViewPager(viewPager);
   }
 
+  protected void checkIfUserSettingsAreSetUp() {
+    if(userSettings.isIdentityCardNumberSet() == false || userSettings.isPasswordSet() == false) {
+      showSettingsDialog();
+    }
+  }
+
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
@@ -69,7 +86,18 @@ public class MainActivity extends AppCompatActivity {
   public boolean onOptionsItemSelected(MenuItem item) {
     int id = item.getItemId();
 
+    if(id == R.id.mnitmSettings) {
+      showSettingsDialog();
+      return true;
+    }
+
     return super.onOptionsItemSelected(item);
+  }
+
+
+  protected void showSettingsDialog() {
+    Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+    startActivity(intent);
   }
 
 }
