@@ -49,8 +49,8 @@ public class EncryptionService implements IEncryptionService {
       String b = bufferedReader.readLine();
       bufferedReader.close();
       inputStream.close();
-      a = decrypt(a, "0366D8637F9C6B21", new byte[]{76, 75, 68, 83, 106, 102, 101, 114, 116, 115, 57, 117, 108, 107, 51, 52});
-      b = decrypt(b, a, new byte[]{100, 51, 70, -61, -92, 37, 100, 57, 74, 97, 102, -62, -89, -61, -68, 42});
+      a = decrypt(a, "0366D8637F9C6B21", new byte[]{76, 75, 68, 83, 106, -102, 7, 114, -37, 115, 57, -3, 108, -107, 51, 52});
+      b = decrypt(b, a, new byte[]{100, 51, 70, -61, -92, 37, 10, 57, -74, 97, 102, -112, -89, 61, -68, 42});
 
       initCiphers(b);
     } catch(Exception e) {
