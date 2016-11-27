@@ -1,6 +1,6 @@
 package net.dankito.stadtbibliothekmuenchen.di;
 
-import android.app.Activity;
+import android.content.Context;
 
 import net.dankito.stadtbibliothekmuenchen.model.UserSettings;
 import net.dankito.stadtbibliothekmuenchen.services.AlarmManagerCronService;
@@ -28,17 +28,17 @@ import dagger.Provides;
 @Module
 public class AndroidDiContainer {
 
-  protected final Activity activity;
+  protected final Context context;
 
 
-  public AndroidDiContainer (Activity activity) {
-    this.activity = activity;
+  public AndroidDiContainer (Context context) {
+    this.context = context;
   }
 
 
   @Provides //scope is not necessary for parameters stored within the module
-  public Activity getActivity() {
-    return activity;
+  public Context getContext() {
+    return context;
   }
 
 
@@ -63,25 +63,25 @@ public class AndroidDiContainer {
   @Provides
   @Singleton
   public NotificationsService provideNotificationsService() {
-    return new NotificationsService(getActivity());
+    return new NotificationsService(getContext());
   }
 
   @Provides
   @Singleton
   public ICronService provideCronService() {
-    return new AlarmManagerCronService(getActivity());
+    return new AlarmManagerCronService(getContext());
   }
 
   @Provides
   @Singleton
   public IFileStorageService provideFileStorageService() {
-    return new AndroidFileStorageService(getActivity());
+    return new AndroidFileStorageService(getContext());
   }
 
   @Provides
   @Singleton
   public IEncryptionService provideEncryptionService() {
-    return new EncryptionService(getActivity());
+    return new EncryptionService(getContext());
   }
 
   @Provides
@@ -94,7 +94,7 @@ public class AndroidDiContainer {
   @Singleton
   public ExpirationsCheckerAndNotifier provideExpirationsCheckerAndNotifier(NotificationsService notificationsService, ICronService cronService,
                                                                             StadtbibliothekMuenchenClient stadtbibliothekMuenchenClient, UserSettings userSettings) {
-    return new ExpirationsCheckerAndNotifier(getActivity(), notificationsService, cronService, stadtbibliothekMuenchenClient, userSettings);
+    return new ExpirationsCheckerAndNotifier(getContext(), notificationsService, cronService, stadtbibliothekMuenchenClient, userSettings);
   }
 
   @Provides
