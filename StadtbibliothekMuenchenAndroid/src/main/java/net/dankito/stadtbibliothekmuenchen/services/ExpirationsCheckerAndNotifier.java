@@ -3,6 +3,7 @@ package net.dankito.stadtbibliothekmuenchen.services;
 import android.content.Context;
 
 import net.dankito.stadtbibliothekmuenchen.R;
+import net.dankito.stadtbibliothekmuenchen.StadtbibliothekMuenchenApplication;
 import net.dankito.stadtbibliothekmuenchen.model.BorrowExpirations;
 import net.dankito.stadtbibliothekmuenchen.model.MediaBorrow;
 import net.dankito.stadtbibliothekmuenchen.model.UserSettings;
@@ -10,6 +11,8 @@ import net.dankito.stadtbibliothekmuenchen.util.web.callbacks.ExtendAllBorrowsCa
 import net.dankito.stadtbibliothekmuenchen.util.web.responses.ExtendAllBorrowsResult;
 
 import java.util.Date;
+
+import javax.inject.Inject;
 
 /**
  * Created by ganymed on 26/11/16.
@@ -24,26 +27,31 @@ public class ExpirationsCheckerAndNotifier {
 
   protected Context context;
 
+  @Inject
   protected NotificationsService notificationsService;
 
+  @Inject
   protected ICronService cronService;
 
+  @Inject
   protected StadtbibliothekMuenchenClient stadtbibliothekMuenchenClient;
 
+  @Inject
   protected UserSettings userSettings;
 
 
-  public ExpirationsCheckerAndNotifier(Context context, NotificationsService notificationsService, ICronService cronService,
-                                       StadtbibliothekMuenchenClient stadtbibliothekMuenchenClient, UserSettings userSettings) {
+  public ExpirationsCheckerAndNotifier(Context context) {
     this.context = context;
-    this.notificationsService = notificationsService;
-    this.cronService = cronService;
-    this.stadtbibliothekMuenchenClient = stadtbibliothekMuenchenClient;
-    this.userSettings = userSettings;
+
+    injectComponents(context);
 
     if(userSettings.isPeriodicalBorrowsExpirationCheckTimeSet()) {
       cronService.startPeriodicalJob(userSettings.getPeriodicalBorrowsExpirationCheckTime(), periodicalExpirationChecker);
     }
+  }
+
+  protected void injectComponents(Context context) {
+    ((StadtbibliothekMuenchenApplication)context.getApplicationContext()).getComponent().inject(this);
   }
 
 

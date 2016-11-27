@@ -92,9 +92,8 @@ public class AndroidDiContainer {
 
   @Provides
   @Singleton
-  public ExpirationsCheckerAndNotifier provideExpirationsCheckerAndNotifier(NotificationsService notificationsService, ICronService cronService,
-                                                                            StadtbibliothekMuenchenClient stadtbibliothekMuenchenClient, UserSettings userSettings) {
-    return new ExpirationsCheckerAndNotifier(getContext(), notificationsService, cronService, stadtbibliothekMuenchenClient, userSettings);
+  public ExpirationsCheckerAndNotifier provideExpirationsCheckerAndNotifier() {
+    return new ExpirationsCheckerAndNotifier(getContext());
   }
 
   @Provides

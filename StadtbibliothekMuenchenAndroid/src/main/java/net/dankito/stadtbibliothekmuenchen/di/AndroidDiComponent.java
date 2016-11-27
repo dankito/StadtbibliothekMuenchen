@@ -4,6 +4,7 @@ import net.dankito.stadtbibliothekmuenchen.MainActivity;
 import net.dankito.stadtbibliothekmuenchen.activities.SettingsActivity;
 import net.dankito.stadtbibliothekmuenchen.fragments.TabBorrowsFragment;
 import net.dankito.stadtbibliothekmuenchen.fragments.TabSearchFragment;
+import net.dankito.stadtbibliothekmuenchen.services.ExpirationsCheckerAndNotifier;
 
 import javax.inject.Singleton;
 
@@ -24,5 +25,7 @@ public interface AndroidDiComponent {
   void inject(TabBorrowsFragment tabBorrowsFragment);
 
   void inject(TabSearchFragment tabSearchFragment);
+
+  void inject(ExpirationsCheckerAndNotifier expirationsCheckerAndNotifier);
 
 }
