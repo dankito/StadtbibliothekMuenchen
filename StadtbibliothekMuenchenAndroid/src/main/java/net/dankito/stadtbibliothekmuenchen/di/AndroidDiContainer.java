@@ -44,8 +44,8 @@ public class AndroidDiContainer {
 
   @Provides
   @Singleton
-  public UserSettings provideUserSettings() {
-    return new UserSettings(); // TODO: read from storage
+  public UserSettings provideUserSettings(UserSettingsManager userSettingsManager) {
+    return userSettingsManager.deserializeUserSettings();
   }
 
   @Provides
