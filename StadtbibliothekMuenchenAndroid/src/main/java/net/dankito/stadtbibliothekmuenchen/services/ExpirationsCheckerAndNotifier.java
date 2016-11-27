@@ -1,6 +1,8 @@
 package net.dankito.stadtbibliothekmuenchen.services;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 
 import net.dankito.stadtbibliothekmuenchen.R;
 import net.dankito.stadtbibliothekmuenchen.StadtbibliothekMuenchenApplication;
@@ -18,7 +20,7 @@ import javax.inject.Inject;
  * Created by ganymed on 26/11/16.
  */
 
-public class ExpirationsCheckerAndNotifier {
+public class ExpirationsCheckerAndNotifier extends BroadcastReceiver {
 
   protected static final String CHECKING_EXPIRATIONS_INDICATOR_NOTIFICATION_TAG = "CheckingExpirations";
 
@@ -40,18 +42,26 @@ public class ExpirationsCheckerAndNotifier {
   protected UserSettings userSettings;
 
 
+  public ExpirationsCheckerAndNotifier() {
+
+  }
+
   public ExpirationsCheckerAndNotifier(Context context) {
     this.context = context;
 
     injectComponents(context);
 
-    if(userSettings.isPeriodicalBorrowsExpirationCheckTimeSet()) {
-      cronService.startPeriodicalJob(userSettings.getPeriodicalBorrowsExpirationCheckTime(), periodicalExpirationChecker);
-    }
+    mayStartPeriodicalBorrowsExpirationCheck();
   }
 
   protected void injectComponents(Context context) {
     ((StadtbibliothekMuenchenApplication)context.getApplicationContext()).getComponent().inject(this);
+  }
+
+  protected void mayStartPeriodicalBorrowsExpirationCheck() {
+    if(userSettings.isPeriodicalBorrowsExpirationCheckTimeSet()) {
+      cronService.startPeriodicalJob(userSettings.getPeriodicalBorrowsExpirationCheckTime(), periodicalExpirationChecker);
+    }
   }
 
 
@@ -148,6 +158,27 @@ public class ExpirationsCheckerAndNotifier {
 
   protected int getWarningIcon() {
     return context.getResources().getIdentifier("@android:drawable/stat_sys_warning", null, null);
+  }
+
+
+  @Override
+  public void onReceive(Context context, Intent intent) {
+    this.context = context;
+    injectComponents(context);
+
+    if(Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) { // Android system has booted
+      systemHasBooted();
+    }
+  }
+
+  protected void systemHasBooted() {
+    try {
+      checkForExpirations();
+
+      mayStartPeriodicalBorrowsExpirationCheck();
+    } catch(Exception e) {
+
+    }
   }
 
 }
