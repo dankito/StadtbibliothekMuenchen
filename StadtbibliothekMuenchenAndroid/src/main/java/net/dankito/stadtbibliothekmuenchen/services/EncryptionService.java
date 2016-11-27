@@ -3,8 +3,7 @@ package net.dankito.stadtbibliothekmuenchen.services;
 import android.content.Context;
 import android.util.Base64;
 
-import net.dankito.fritzbox.R;
-import net.dankito.fritzbox.services.exceptions.EncryptionServiceException;
+import net.dankito.stadtbibliothekmuenchen.R;
 import net.dankito.stadtbibliothekmuenchen.services.exceptions.EncryptionServiceException;
 
 import java.io.BufferedReader;

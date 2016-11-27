@@ -4,11 +4,16 @@ import android.app.Activity;
 
 import net.dankito.stadtbibliothekmuenchen.model.UserSettings;
 import net.dankito.stadtbibliothekmuenchen.services.AlarmManagerCronService;
+import net.dankito.stadtbibliothekmuenchen.services.AndroidFileStorageService;
 import net.dankito.stadtbibliothekmuenchen.services.BorrowExpirationCalculator;
+import net.dankito.stadtbibliothekmuenchen.services.EncryptionService;
 import net.dankito.stadtbibliothekmuenchen.services.ExpirationsCheckerAndNotifier;
 import net.dankito.stadtbibliothekmuenchen.services.ICronService;
+import net.dankito.stadtbibliothekmuenchen.services.IEncryptionService;
+import net.dankito.stadtbibliothekmuenchen.services.IFileStorageService;
 import net.dankito.stadtbibliothekmuenchen.services.NotificationsService;
 import net.dankito.stadtbibliothekmuenchen.services.StadtbibliothekMuenchenClient;
+import net.dankito.stadtbibliothekmuenchen.services.UserSettingsManager;
 import net.dankito.stadtbibliothekmuenchen.util.web.IWebClient;
 import net.dankito.stadtbibliothekmuenchen.util.web.OkHttpWebClient;
 
@@ -65,6 +70,24 @@ public class AndroidDiContainer {
   @Singleton
   public ICronService provideCronService() {
     return new AlarmManagerCronService(getActivity());
+  }
+
+  @Provides
+  @Singleton
+  public IFileStorageService provideFileStorageService() {
+    return new AndroidFileStorageService(getActivity());
+  }
+
+  @Provides
+  @Singleton
+  public IEncryptionService provideEncryptionService() {
+    return new EncryptionService(getActivity());
+  }
+
+  @Provides
+  @Singleton
+  public UserSettingsManager provideUserSettingsManager(IFileStorageService fileStorageService, IEncryptionService encryptionService) {
+    return new UserSettingsManager(fileStorageService, encryptionService);
   }
 
   @Provides
