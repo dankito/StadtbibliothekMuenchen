@@ -269,6 +269,10 @@ public class StadtbibliothekMuenchenClient {
 
 
   public void extendAllBorrowsAndGetBorrowsStateAsync(final ExtendAllBorrowsCallback callback) {
+    if(userSettings.isIdentityCardNumberSet() == false && userSettings.isPasswordSet() == false) { // on first start
+      return;
+    }
+
     if(isLoggedIn) {
       navigateToUserAccountAndExtendAllBorrows(callback);
     }
