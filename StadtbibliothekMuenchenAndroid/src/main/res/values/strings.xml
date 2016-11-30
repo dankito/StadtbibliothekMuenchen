@@ -19,8 +19,8 @@
 
     <string name="fragment_settings_identity_card_number">Identity card number</string>
     <string name="fragment_settings_password">Password</string>
-    <string name="fragment_settings_hint_identity_card_number_or_password_not_set">Identity car number or password not set.\n
-        Without app cannot connect to Stadtbibliothek München Server.</string>
+    <string name="fragment_settings_hint_identity_card_number_or_password_not_set">Identity card number or password not set.\nWithout
+        app cannot connect to Stadtbibliothek München server.</string>
     <string name="fragment_settings_testing_fritz_box_settings_failed_title">Login to FritzBox failed</string>
     <string name="fragment_settings_testing_fritz_box_settings_succeeded">Login success, settings are correct</string>
     <string name="fragment_setting_periodically_check_for_expired_borrows">Periodically check for expired borrows</string>
