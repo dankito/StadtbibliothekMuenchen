@@ -46,7 +46,7 @@ public class SettingsActivity extends AppCompatActivity {
   protected Calendar newTimeToCheckForExpirations = null;
 
 
-  protected EditText edtxtAddress;
+  protected EditText edtxtIdentityCardNumber;
 
   protected EditText edtxtPassword;
 
@@ -73,8 +73,8 @@ public class SettingsActivity extends AppCompatActivity {
       txtvwHintIdentityCardNumberOrPasswordNotSet.setVisibility(View.VISIBLE);
     }
 
-    edtxtAddress = (EditText)findViewById(R.id.edtxtIdentityCardNumber);
-    edtxtAddress.setText(userSettings.getIdentityCardNumber());
+    edtxtIdentityCardNumber = (EditText)findViewById(R.id.edtxtIdentityCardNumber);
+    edtxtIdentityCardNumber.setText(userSettings.getIdentityCardNumber());
 
     edtxtPassword = (EditText)findViewById(R.id.edtxtPassword);
     edtxtPassword.setText(userSettings.getPassword());
@@ -131,7 +131,7 @@ public class SettingsActivity extends AppCompatActivity {
 
 
   protected void testUserSettings() {
-    stadtbibliothekMuenchenClient.loginAsync(edtxtAddress.getText().toString(), edtxtPassword.getText().toString(), new LoginCallback() {
+    stadtbibliothekMuenchenClient.loginAsync(edtxtIdentityCardNumber.getText().toString(), edtxtPassword.getText().toString(), new LoginCallback() {
       @Override
       public void completed(LoginResult result) {
         if(result.isSuccessful() == false) {
@@ -155,7 +155,7 @@ public class SettingsActivity extends AppCompatActivity {
 
 
   protected void saveUserSettings() {
-    userSettings.setIdentityCardNumber(edtxtAddress.getText().toString());
+    userSettings.setIdentityCardNumber(edtxtIdentityCardNumber.getText().toString());
     userSettings.setPassword(edtxtPassword.getText().toString());
 
     if(chkbxPeriodicallyCheckForExpiredBorrows.isChecked() == false) {
