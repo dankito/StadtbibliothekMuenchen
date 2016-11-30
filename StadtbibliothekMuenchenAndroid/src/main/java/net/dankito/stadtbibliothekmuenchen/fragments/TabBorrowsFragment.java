@@ -4,6 +4,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -38,6 +41,11 @@ public class TabBorrowsFragment extends Fragment {
   protected BorrowsAdapter borrowsAdapter;
 
 
+  public TabBorrowsFragment() {
+    setHasOptionsMenu(true);
+  }
+
+
   @Nullable
   @Override
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -53,6 +61,26 @@ public class TabBorrowsFragment extends Fragment {
     getBorrows();
 
     return view;
+  }
+
+
+  @Override
+  public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    inflater.inflate(R.menu.menu_tab_search_borrows, menu);
+
+    super.onCreateOptionsMenu(menu, inflater);
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    int id = item.getItemId();
+
+    if(id == R.id.mnitmRefreshBorrowsList) {
+      getBorrows();
+      return true;
+    }
+
+    return super.onOptionsItemSelected(item);
   }
 
 

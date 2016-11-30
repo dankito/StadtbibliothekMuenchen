@@ -6,6 +6,7 @@
 
     <string name="settings">Einstellungen</string>
     <string name="search">Suche</string>
+    <string name="refresh">Updaten</string>
     <string name="test">Testen</string>
 
     <string name="tab_title_borrows">Ausleihen</string>
