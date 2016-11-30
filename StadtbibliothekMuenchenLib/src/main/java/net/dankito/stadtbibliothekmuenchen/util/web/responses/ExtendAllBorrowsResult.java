@@ -25,4 +25,14 @@ public class ExtendAllBorrowsResult extends ResponseBase {
     return borrows;
   }
 
+
+  @Override
+  public String toString() {
+    if(isSuccessful()) {
+      return "Currently has " + borrows.getBorrows().size() + " borrows";
+    }
+
+    return super.toString();
+  }
+
 }
