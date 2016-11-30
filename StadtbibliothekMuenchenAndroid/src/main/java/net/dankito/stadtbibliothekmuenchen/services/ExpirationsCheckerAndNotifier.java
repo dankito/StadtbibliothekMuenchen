@@ -10,6 +10,7 @@ import net.dankito.stadtbibliothekmuenchen.StadtbibliothekMuenchenApplication;
 import net.dankito.stadtbibliothekmuenchen.model.BorrowExpirations;
 import net.dankito.stadtbibliothekmuenchen.model.MediaBorrow;
 import net.dankito.stadtbibliothekmuenchen.model.UserSettings;
+import net.dankito.stadtbibliothekmuenchen.services.listener.UserSettingsManagerListener;
 import net.dankito.stadtbibliothekmuenchen.util.web.callbacks.ExtendAllBorrowsCallback;
 import net.dankito.stadtbibliothekmuenchen.util.web.responses.ExtendAllBorrowsResult;
 
@@ -44,6 +45,9 @@ public class ExpirationsCheckerAndNotifier extends BroadcastReceiver {
   @Inject
   protected UserSettings userSettings;
 
+  @Inject
+  protected UserSettingsManager userSettingsManager;
+
 
   public ExpirationsCheckerAndNotifier() {
 
@@ -59,6 +63,8 @@ public class ExpirationsCheckerAndNotifier extends BroadcastReceiver {
 
   protected void injectComponents(Context context) {
     ((StadtbibliothekMuenchenApplication)context.getApplicationContext()).getComponent().inject(this);
+
+    userSettingsManager.addListener(userSettingsManagerListener);
   }
 
   protected void mayStartPeriodicalBorrowsExpirationCheck() {
@@ -164,6 +170,14 @@ public class ExpirationsCheckerAndNotifier extends BroadcastReceiver {
   protected int getWarningIcon() {
     return context.getResources().getIdentifier("@android:drawable/stat_sys_warning", null, null);
   }
+
+
+  protected UserSettingsManagerListener userSettingsManagerListener = new UserSettingsManagerListener() {
+    @Override
+    public void userSettingsUpdated(UserSettings updatedSettings) {
+      checkForExpirationsSynchronously();
+    }
+  };
 
 
   @Override
