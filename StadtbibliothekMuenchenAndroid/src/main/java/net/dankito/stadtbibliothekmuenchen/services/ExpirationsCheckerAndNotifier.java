@@ -13,6 +13,8 @@ import net.dankito.stadtbibliothekmuenchen.util.web.callbacks.ExtendAllBorrowsCa
 import net.dankito.stadtbibliothekmuenchen.util.web.responses.ExtendAllBorrowsResult;
 
 import java.util.Date;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -68,14 +70,13 @@ public class ExpirationsCheckerAndNotifier extends BroadcastReceiver {
   protected Runnable periodicalExpirationChecker = new Runnable() {
     @Override
     public void run() {
-      checkForExpirations();
+      checkForExpirationsAsync();
     }
   };
 
-  protected void checkForExpirations() {
+  protected void checkForExpirationsAsync() {
     if(context != null) {
-      int iconId = context.getResources().getIdentifier("@android:drawable/stat_sys_phone_call_forward", null, null);
-      notificationsService.showNotification("Überprüfe Leihfristen", "Bin hier hart am Arbeiten", iconId, CHECKING_EXPIRATIONS_INDICATOR_NOTIFICATION_TAG);
+      showCheckingExpirationsNotificaiton();
     }
 
     if(stadtbibliothekMuenchenClient != null) {
@@ -86,6 +87,32 @@ public class ExpirationsCheckerAndNotifier extends BroadcastReceiver {
         }
       });
     }
+  }
+
+  /**
+   * When App is waked up by AlarmManager, App runs only till thread has finished.
+   * So it doesn't wait for the result of extendAllBorrowsAndGetBorrowsStateAsync() on the other thread
+   * -> wait for other thread till it's done.
+   */
+  protected void checkForExpirationsSynchronously() {
+    showCheckingExpirationsNotificaiton();
+
+    final CountDownLatch countDownLatch = new CountDownLatch(1);
+
+    stadtbibliothekMuenchenClient.extendAllBorrowsAndGetBorrowsStateAsync(new ExtendAllBorrowsCallback() {
+      @Override
+      public void completed(ExtendAllBorrowsResult result) {
+        checkingBorrowsStateCompleted(result);
+        countDownLatch.countDown();
+      }
+    });
+
+    try { countDownLatch.await(30, TimeUnit.SECONDS); } catch(Exception ignored) { }
+  }
+
+  protected void showCheckingExpirationsNotificaiton() {
+    int iconId = context.getResources().getIdentifier("@android:drawable/stat_sys_phone_call_forward", null, null);
+    notificationsService.showNotification("Überprüfe Leihfristen", "Bin hier hart am Arbeiten", iconId, CHECKING_EXPIRATIONS_INDICATOR_NOTIFICATION_TAG);
   }
 
   protected void checkingBorrowsStateCompleted(ExtendAllBorrowsResult result) {
@@ -173,7 +200,7 @@ public class ExpirationsCheckerAndNotifier extends BroadcastReceiver {
 
   protected void systemHasBooted() {
     try {
-      checkForExpirations();
+      checkForExpirationsSynchronously();
 
       mayStartPeriodicalBorrowsExpirationCheck();
     } catch(Exception e) {
