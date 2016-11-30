@@ -8,6 +8,7 @@ import net.dankito.stadtbibliothekmuenchen.services.listener.UserSettingsManager
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -40,6 +41,8 @@ public class UserSettingsManager {
     try {
       String encrypted = fileStorageService.readFromFile(USER_SETTINGS_FILENAME);
       String json = encryptionService.decrypt(encrypted);
+
+      mapper.setTimeZone(TimeZone.getDefault()); // to fix bug that Calender gets deserialized with wrong timezone
 
       return mapper.readValue(json, UserSettings.class);
     } catch(Exception e) {

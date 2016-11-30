@@ -100,7 +100,8 @@ public class SettingsActivity extends AppCompatActivity {
   }
 
   protected void showTimeToCheckForExpirations(Calendar checkTime) {
-    txtvwTimeToCheckForExpirations.setText(getString(R.string.fragment_setting_time_to_check_for_expirations, checkTime.get(Calendar.HOUR_OF_DAY), checkTime.get(Calendar.MINUTE)));
+    txtvwTimeToCheckForExpirations.setText(getString(R.string.fragment_setting_time_to_check_for_expirations,
+        checkTime.get(Calendar.HOUR_OF_DAY), checkTime.get(Calendar.MINUTE)));
   }
 
   protected void setupToolbar() {
