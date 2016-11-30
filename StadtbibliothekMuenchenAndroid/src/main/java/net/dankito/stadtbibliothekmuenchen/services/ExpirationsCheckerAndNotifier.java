@@ -1,5 +1,6 @@
 package net.dankito.stadtbibliothekmuenchen.services;
 
+import android.app.AlarmManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -62,30 +63,7 @@ public class ExpirationsCheckerAndNotifier extends BroadcastReceiver {
 
   protected void mayStartPeriodicalBorrowsExpirationCheck() {
     if(userSettings.isPeriodicalBorrowsExpirationCheckTimeSet()) {
-      cronService.startPeriodicalJob(userSettings.getPeriodicalBorrowsExpirationCheckTime(), periodicalExpirationChecker);
-    }
-  }
-
-
-  protected Runnable periodicalExpirationChecker = new Runnable() {
-    @Override
-    public void run() {
-      checkForExpirationsAsync();
-    }
-  };
-
-  protected void checkForExpirationsAsync() {
-    if(context != null) {
-      showCheckingExpirationsNotificaiton();
-    }
-
-    if(stadtbibliothekMuenchenClient != null) {
-      stadtbibliothekMuenchenClient.extendAllBorrowsAndGetBorrowsStateAsync(new ExtendAllBorrowsCallback() {
-        @Override
-        public void completed(ExtendAllBorrowsResult result) {
-          checkingBorrowsStateCompleted(result);
-        }
-      });
+      cronService.startPeriodicalJob(userSettings.getPeriodicalBorrowsExpirationCheckTime(), AlarmManager.INTERVAL_DAY, ExpirationsCheckerAndNotifier.class);
     }
   }
 
@@ -195,6 +173,9 @@ public class ExpirationsCheckerAndNotifier extends BroadcastReceiver {
 
     if(Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) { // Android system has booted
       systemHasBooted();
+    }
+    else { // fired by ICronService
+      checkForExpirationsSynchronously();
     }
   }
 
