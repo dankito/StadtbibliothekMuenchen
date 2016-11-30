@@ -73,13 +73,24 @@ public class ExpirationsCheckerAndNotifier extends BroadcastReceiver {
     }
   }
 
+  protected void checkForExpirationsAsync() {
+    showCheckingExpirationsNotification();
+
+    stadtbibliothekMuenchenClient.extendAllBorrowsAndGetBorrowsStateAsync(new ExtendAllBorrowsCallback() {
+      @Override
+      public void completed(ExtendAllBorrowsResult result) {
+        checkingBorrowsStateCompleted(result);
+      }
+    });
+  }
+
   /**
    * When App is waked up by AlarmManager, App runs only till thread has finished.
    * So it doesn't wait for the result of extendAllBorrowsAndGetBorrowsStateAsync() on the other thread
    * -> wait for other thread till it's done.
    */
   protected void checkForExpirationsSynchronously() {
-    showCheckingExpirationsNotificaiton();
+    showCheckingExpirationsNotification();
 
     final CountDownLatch countDownLatch = new CountDownLatch(1);
 
@@ -94,7 +105,7 @@ public class ExpirationsCheckerAndNotifier extends BroadcastReceiver {
     try { countDownLatch.await(30, TimeUnit.SECONDS); } catch(Exception ignored) { }
   }
 
-  protected void showCheckingExpirationsNotificaiton() {
+  protected void showCheckingExpirationsNotification() {
     int iconId = context.getResources().getIdentifier("@android:drawable/stat_sys_phone_call_forward", null, null);
     notificationsService.showNotification("Überprüfe Leihfristen", "Bin hier hart am Arbeiten", iconId, CHECKING_EXPIRATIONS_INDICATOR_NOTIFICATION_TAG);
   }
@@ -175,7 +186,7 @@ public class ExpirationsCheckerAndNotifier extends BroadcastReceiver {
   protected UserSettingsManagerListener userSettingsManagerListener = new UserSettingsManagerListener() {
     @Override
     public void userSettingsUpdated(UserSettings updatedSettings) {
-      checkForExpirationsSynchronously();
+      checkForExpirationsAsync();
     }
   };
 
