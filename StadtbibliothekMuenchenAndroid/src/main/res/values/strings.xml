@@ -24,5 +24,6 @@
     <string name="fragment_settings_testing_fritz_box_settings_failed_title">Login to FritzBox failed</string>
     <string name="fragment_settings_testing_fritz_box_settings_succeeded">Login success, settings are correct</string>
     <string name="fragment_setting_periodically_check_for_expired_borrows">Periodically check for expired borrows</string>
+    <string name="fragment_setting_time_to_check_for_expirations" formatted="false">%02d:%02d</string>
 
 </resources>
