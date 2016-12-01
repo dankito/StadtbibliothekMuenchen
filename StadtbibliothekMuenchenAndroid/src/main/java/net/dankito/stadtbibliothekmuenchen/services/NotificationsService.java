@@ -6,9 +6,9 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.TaskStackBuilder;
-import android.support.v7.app.NotificationCompat;
 
 import net.dankito.stadtbibliothekmuenchen.MainActivity;
+import net.dankito.stadtbibliothekmuenchen.model.NotificationConfig;
 import net.dankito.stadtbibliothekmuenchen.model.NotificationInfo;
 
 import java.util.Map;
@@ -33,11 +33,11 @@ public class NotificationsService {
   }
 
 
-  public void showNotification(String title, String text, int iconId) {
-    showNotification(title, text, iconId, null);
+  public void showNotification(NotificationConfig config) {
+    showNotification(config, null);
   }
 
-  public void showNotification(String title, String text, int iconId, String tag) {
+  public void showNotification(NotificationConfig config, String tag) {
     NotificationManager notificationManager = getNotificationManager();
 
     Intent intent = new Intent(context, MainActivity.class);
@@ -61,13 +61,7 @@ public class NotificationsService {
     PendingIntent pendingIntent = stackBuilder.getPendingIntent(notificationId, PendingIntent.FLAG_UPDATE_CURRENT);
 //    PendingIntent pendingIntent = PendingIntent.getActivity(context, notificationId, intent, 0);
 
-    Notification notification = new NotificationCompat.Builder(context)
-        .setContentTitle(title)
-        .setContentText(text)
-        .setSmallIcon(iconId)
-        .setContentIntent(pendingIntent)
-        .setAutoCancel(true)
-        .build();
+    Notification notification = createNotification(config, pendingIntent);
 
     if(tag != null) {
       notificationManager.notify(tag, notificationId, notification);
@@ -76,6 +70,26 @@ public class NotificationsService {
     else {
       notificationManager.notify(notificationId, notification);
     }
+  }
+
+  protected Notification createNotification(NotificationConfig config, PendingIntent pendingIntent) {
+    android.support.v4.app.NotificationCompat.Builder builder = new android.support.v4.app.NotificationCompat.Builder(context)
+        .setContentTitle(config.getTitle())
+        .setContentText(config.getText())
+        .setSmallIcon(config.getIconId())
+        .setContentIntent(pendingIntent)
+        .setAutoCancel(true)
+        ;
+
+    if(config.isMultiLineText()) {
+      builder.setStyle(new android.support.v4.app.NotificationCompat.BigTextStyle().bigText(config.getText()));
+    }
+
+    if(config.letLedBlink()) {
+      builder.setLights(config.getLedArgb(), config.getLedOnMillis(), config.getLedOffMillis());
+    }
+
+    return builder.build();
   }
 
 

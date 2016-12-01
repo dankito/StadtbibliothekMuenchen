@@ -9,6 +9,7 @@ import net.dankito.stadtbibliothekmuenchen.R;
 import net.dankito.stadtbibliothekmuenchen.StadtbibliothekMuenchenApplication;
 import net.dankito.stadtbibliothekmuenchen.model.BorrowExpirations;
 import net.dankito.stadtbibliothekmuenchen.model.MediaBorrow;
+import net.dankito.stadtbibliothekmuenchen.model.NotificationConfig;
 import net.dankito.stadtbibliothekmuenchen.model.UserSettings;
 import net.dankito.stadtbibliothekmuenchen.services.listener.UserSettingsManagerListener;
 import net.dankito.stadtbibliothekmuenchen.util.web.callbacks.ExtendAllBorrowsCallback;
@@ -107,7 +108,7 @@ public class ExpirationsCheckerAndNotifier extends BroadcastReceiver {
 
   protected void showCheckingExpirationsNotification() {
     int iconId = context.getResources().getIdentifier("@android:drawable/stat_sys_phone_call_forward", null, null);
-    notificationsService.showNotification("Überprüfe Leihfristen", "Bin hier hart am Arbeiten", iconId, CHECKING_EXPIRATIONS_INDICATOR_NOTIFICATION_TAG);
+    notificationsService.showNotification(new NotificationConfig("Überprüfe Leihfristen", "Bin hier hart am Arbeiten", iconId), CHECKING_EXPIRATIONS_INDICATOR_NOTIFICATION_TAG);
   }
 
   protected void checkingBorrowsStateCompleted(ExtendAllBorrowsResult result) {
@@ -120,7 +121,7 @@ public class ExpirationsCheckerAndNotifier extends BroadcastReceiver {
       String title = context.getResources().getString(R.string.notification_could_not_check_expirations);
       String text = result.getError();
       int iconId = getErrorIcon();
-      notificationsService.showNotification(title, text, iconId, CHECKING_EXPIRATIONS_FAILED_NOTIFICATION_TAG);
+      notificationsService.showNotification(new NotificationConfig(title, text, iconId), CHECKING_EXPIRATIONS_FAILED_NOTIFICATION_TAG);
     }
   }
 
@@ -170,7 +171,7 @@ public class ExpirationsCheckerAndNotifier extends BroadcastReceiver {
 
 
   protected void showNotification(MediaBorrow borrow, String title, String text, int iconId) {
-    notificationsService.showNotification(title, text, iconId, borrow.getMediaNumber());
+    notificationsService.showNotification(new NotificationConfig(title, text, iconId), borrow.getMediaNumber());
   }
 
 
