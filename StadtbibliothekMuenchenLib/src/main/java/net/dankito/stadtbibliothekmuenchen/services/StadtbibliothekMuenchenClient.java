@@ -634,21 +634,39 @@ public class StadtbibliothekMuenchenClient {
 
   protected void parseSimpleSearchResults(String searchTerm, WebClientResponse response, SimpleSearchCallback callback) {
     try {
-      SearchResults searchResults = new SearchResults();
       Document document = Jsoup.parse(response.getBody());
-      Elements tableRowElements = document.body().select("tr.rTable_tr_even, tr.rTable_tr_odd");
+      Element txtinsertElement = document.body().select("span.txtinsert").first();
 
-      for(Element tableRowElement : tableRowElements) {
-        SearchResult searchResult = parseSearchResultTableRow(tableRowElement);
-
-        searchResults.addSearchResult(searchResult);
+      if(txtinsertElement != null) {
+        String txtinsertText = txtinsertElement.text().trim();
+        if("Trefferliste".equals(txtinsertText)) {
+          parseSearchResultList(searchTerm, document, callback);
+          return;
+        }
+        else if("Vollanzeige Katalog".equals(txtinsertText)) {
+          parseVollanzeigeKatalogSearchResult(searchTerm, document, callback);
+          return;
+        }
       }
 
-      callback.completed(new SimpleSearchResponse(searchTerm, searchResults));
+      callback.completed(new SimpleSearchResponse("Konnte Ergebnisse der einfachen Suche nicht parsen. Konnte weder 'Trefferliste' noch 'Vollanzeige Katalog' finden."));
     } catch(Exception e) {
       log.error("Could not parse Simple Search result page", e);
       callback.completed(new SimpleSearchResponse("Konnte Ergebnisse der einfachen Suche nicht parsen: " + e.getLocalizedMessage()));
     }
+  }
+
+  protected void parseSearchResultList(String searchTerm, Document document, SimpleSearchCallback callback) {
+    SearchResults searchResults = new SearchResults();
+    Elements tableRowElements = document.body().select("tr.rTable_tr_even, tr.rTable_tr_odd");
+
+    for(Element tableRowElement : tableRowElements) {
+      SearchResult searchResult = parseSearchResultTableRow(tableRowElement);
+
+      searchResults.addSearchResult(searchResult);
+    }
+
+    callback.completed(new SimpleSearchResponse(searchTerm, searchResults));
   }
 
   protected SearchResult parseSearchResultTableRow(Element tableRowElement) {
@@ -692,6 +710,11 @@ public class StadtbibliothekMuenchenClient {
     mediaDetailsUrl = mediaDetailsUrl.replace("')", "");
 
     return mediaDetailsUrl;
+  }
+
+
+  protected void parseVollanzeigeKatalogSearchResult(String searchTerm, Document document, SimpleSearchCallback callback) {
+    // TODO
   }
 
 
