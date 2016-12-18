@@ -80,11 +80,11 @@ public class StadtbibliothekMuenchenClient {
   protected static final int SEARCH_RESULT_TABLE_DATA_INDEX_YEAR = 5;
 
 
-  protected static final String MEDIA_AVAILABILITY_ICON_URL_AVAILABLE = "https://ssl.muenchen.de/aDISWeb/icons/verfu_ja.gif";
+  public static final String MEDIA_AVAILABILITY_ICON_URL_AVAILABLE = "https://ssl.muenchen.de/aDISWeb/icons/verfu_ja.gif";
 
-  protected static final String MEDIA_AVAILABILITY_ICON_URL_NOT_AVAILABLE = "https://ssl.muenchen.de/aDISWeb/icons/verfu_nein.gif";
+  public static final String MEDIA_AVAILABILITY_ICON_URL_NOT_AVAILABLE = "https://ssl.muenchen.de/aDISWeb/icons/verfu_nein.gif";
 
-  protected static final String MEDIA_AVAILABILITY_ICON_URL_INFO = "https://ssl.muenchen.de/aDISWeb/icons/verfu_info.gif";
+  public static final String MEDIA_AVAILABILITY_ICON_URL_INFO = "https://ssl.muenchen.de/aDISWeb/icons/verfu_info.gif";
 
 
   public static final int DOWNLOAD_CONNECTION_TIMEOUT_MILLIS = 2000;

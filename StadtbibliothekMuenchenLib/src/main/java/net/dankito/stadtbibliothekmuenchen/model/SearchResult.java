@@ -1,5 +1,7 @@
 package net.dankito.stadtbibliothekmuenchen.model;
 
+import net.dankito.stadtbibliothekmuenchen.services.StadtbibliothekMuenchenClient;
+
 import org.jsoup.nodes.Document;
 
 /**
@@ -66,6 +68,10 @@ public class SearchResult {
 
   public void setMediaTypeIconUrl(String mediaTypeIconUrl) {
     this.mediaTypeIconUrl = mediaTypeIconUrl;
+  }
+
+  public boolean isAvailable() {
+    return StadtbibliothekMuenchenClient.MEDIA_AVAILABILITY_ICON_URL_AVAILABLE.equals(getAvailabilityIconUrl());
   }
 
   public String getAvailabilityIconUrl() {
