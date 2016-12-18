@@ -13,9 +13,11 @@ import net.dankito.stadtbibliothekmuenchen.util.web.RequestCallback;
 import net.dankito.stadtbibliothekmuenchen.util.web.RequestParameters;
 import net.dankito.stadtbibliothekmuenchen.util.web.WebClientResponse;
 import net.dankito.stadtbibliothekmuenchen.util.web.callbacks.ExtendAllBorrowsCallback;
+import net.dankito.stadtbibliothekmuenchen.util.web.callbacks.GetMediaDetailsCallback;
 import net.dankito.stadtbibliothekmuenchen.util.web.callbacks.LoginCallback;
 import net.dankito.stadtbibliothekmuenchen.util.web.callbacks.SimpleSearchCallback;
 import net.dankito.stadtbibliothekmuenchen.util.web.responses.ExtendAllBorrowsResult;
+import net.dankito.stadtbibliothekmuenchen.util.web.responses.GetMediaDetailsResult;
 import net.dankito.stadtbibliothekmuenchen.util.web.responses.LoginResult;
 import net.dankito.stadtbibliothekmuenchen.util.web.responses.SimpleSearchResponse;
 
@@ -26,10 +28,15 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * Created by ganymed on 24/11/16.
@@ -89,6 +96,8 @@ public class StadtbibliothekMuenchenClient {
 
 
   protected IWebClient webClient;
+
+  protected Executor threadPool = Executors.newFixedThreadPool(1); // only execute one retrieving media details after another as as a constraint we have to return to search resultpage before requesting next media details
 
   protected BorrowExpirationCalculator borrowExpirationCalculator;
 
@@ -729,6 +738,7 @@ public class StadtbibliothekMuenchenClient {
 
     if(details != null) {
       SearchResult searchResult = new SearchResult();
+      searchResult.setDetails(details);
 
       searchResult.setMediaInfo(details.getTitle());
       searchResult.setMediaTypeIconUrl(details.getMediaTypeIconUrl());
@@ -751,6 +761,98 @@ public class StadtbibliothekMuenchenClient {
     return MEDIA_AVAILABILITY_ICON_URL_NOT_AVAILABLE;
   }
 
+
+  public void getMediaDetailsAsync(final SearchResult searchResult, final GetMediaDetailsCallback callback) {
+    threadPool.execute(new Runnable() {
+      @Override
+      public void run() {
+        getMediaDetails(searchResult, callback);
+      }
+    });
+  }
+
+  protected void getMediaDetails(final SearchResult searchResult, final GetMediaDetailsCallback callback) {
+    try {
+      Document searchResultsDocument = searchResult.getSearchResultsDocument();
+
+      Element formElement = getPageFormElement(searchResultsDocument);
+      if(formElement != null) {
+        String mediaDetailsUrl = makeLinkAbsolute(formElement.attr("action"));
+
+        String requestBody = createGetMediaDetailsPageRequestBody(searchResult, formElement);
+
+        RequestParameters parameters = createRequestParametersWithDefaultValues(mediaDetailsUrl, requestBody);
+        parameters.addHeader("Referer", mediaDetailsUrl);
+
+        WebClientResponse response = webClient.post(parameters);
+
+        if(response.isSuccessful() == false) {
+          callback.completed(new GetMediaDetailsResult(response.getError()));
+        }
+        else {
+          parseMediaDetailsPage(searchResult, response, callback);
+        }
+      }
+    } catch(Exception e) {
+
+    }
+  }
+
+  protected Map<Document, Integer> mediaDetailsRequestCountForSearchResult = new ConcurrentHashMap<>();
+
+  protected String createGetMediaDetailsPageRequestBody(SearchResult searchResult, Element formElement) throws UnsupportedEncodingException {
+    Elements inputElements = formElement.select("input");
+    String requestBody = "";
+
+    for(Element inputElement : inputElements) {
+      String type = inputElement.attr("type");
+      String name = inputElement.attr("name");
+
+      if("hidden".equals(type)) {
+        if("selected".equals(name)) {
+          requestBody += name + "=" + "ZTEXT       " + searchResult.getMediaDetailsToken() + "&";
+        }
+        else if("requestCount".equals(name)) {
+          int requestCount = 0;
+
+          if(mediaDetailsRequestCountForSearchResult.containsKey(formElement.ownerDocument()) == false) {
+            try {
+              requestCount = Integer.parseInt(inputElement.attr("value"));
+            } catch (Exception ignored) {
+              requestCount = 1;
+            }
+          }
+          else {
+            requestCount = mediaDetailsRequestCountForSearchResult.get(formElement.ownerDocument()) + 2;
+          }
+
+          mediaDetailsRequestCountForSearchResult.put(formElement.ownerDocument(), requestCount);
+          requestBody += name + "=" + requestCount + "&";
+        }
+        else {
+          requestBody += name + "=" + URLEncoder.encode(inputElement.attr("value"), "ASCII") + "&";
+        }
+      }
+    }
+
+    requestBody = removeLastAmpersand(requestBody);
+    return requestBody;
+  }
+
+  protected void parseMediaDetailsPage(SearchResult searchResult, WebClientResponse response, GetMediaDetailsCallback callback) {
+    Document document = Jsoup.parse(response.getBody());
+
+    goBackToSearchResultsPage(document);
+
+    MediaDetails details = parseMediaDetailsPage(document);
+    if(details != null) {
+      searchResult.setDetails(details);
+      callback.completed(new GetMediaDetailsResult(searchResult, details));
+    }
+    else {
+      callback.completed(new GetMediaDetailsResult("Konnte Media Details Seite nicht parsen"));
+    }
+  }
 
   protected MediaDetails parseMediaDetailsPage(Document document) {
     Element detailsTableElement = document.body().select("table.gi").first();
@@ -839,6 +941,34 @@ public class StadtbibliothekMuenchenClient {
     }
 
     return null;
+  }
+
+
+  protected void goBackToSearchResultsPage(Document mediaDetailsDocument) {
+    try {
+      Element formElement = getPageFormElement(mediaDetailsDocument);
+      if(formElement != null) {
+        String searchResultsUrl = makeLinkAbsolute(formElement.attr("action"));
+
+        Elements inputElements = formElement.select("input");
+        String requestBody = "";
+
+        for(Element inputElement : inputElements) {
+          String type = inputElement.attr("type");
+          String name = inputElement.attr("name");
+
+          if("hidden".equals(type)) {
+            requestBody += name + "=" + URLEncoder.encode(inputElement.attr("value"), "ASCII") + "&";
+          }
+        }
+
+        requestBody = removeLastAmpersand(requestBody);
+
+        webClient.post(new RequestParameters(searchResultsUrl, requestBody));
+      }
+    } catch(Exception e) {
+
+    }
   }
 
 
