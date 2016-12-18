@@ -2,7 +2,9 @@ package net.dankito.stadtbibliothekmuenchen.model;
 
 import net.dankito.stadtbibliothekmuenchen.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * Created by ganymed on 25/11/16.
@@ -13,6 +15,8 @@ public class UserSettings {
   protected String identityCardNumber;
 
   protected String password;
+
+  protected List<Library> favoriteLibraries = new ArrayList<>();
 
   protected boolean isShowSystemNotificationsOnExpirationEnabled = true;
 
@@ -58,6 +62,22 @@ public class UserSettings {
 
   public void setPassword(String password) {
     this.password = password;
+  }
+
+  public boolean areFavoriteLibrariesSet() {
+    return favoriteLibraries.size() > 0;
+  }
+
+  public List<Library> getFavoriteLibraries() {
+    return new ArrayList<>(favoriteLibraries);
+  }
+
+  public void addFavoriteLibrary(Library library) {
+    favoriteLibraries.add(library);
+  }
+
+  public void removeFavoriteLibrary(Library library) {
+    favoriteLibraries.remove(library);
   }
 
   public boolean isShowSystemNotificationsOnExpirationEnabled() {
