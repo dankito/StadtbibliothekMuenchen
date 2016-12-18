@@ -1,5 +1,10 @@
 package net.dankito.stadtbibliothekmuenchen.model;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 /**
  * Created by ganymed on 18/12/16.
  */
@@ -13,6 +18,8 @@ public class MediaDetails {
   protected String mediaTypeIconUrl;
 
   protected String availabilityIconUrl;
+
+  protected Set<MediaCopy> copies = new HashSet<>();
 
 
   public String getTitle() {
@@ -45,6 +52,14 @@ public class MediaDetails {
 
   public void setAvailabilityIconUrl(String availabilityIconUrl) {
     this.availabilityIconUrl = availabilityIconUrl;
+  }
+
+  public void addCopy(MediaCopy copy) {
+    copies.add(copy);
+  }
+
+  public List<MediaCopy> getCopies() {
+    return new ArrayList<>(copies);
   }
 
 
