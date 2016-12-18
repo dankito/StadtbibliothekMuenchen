@@ -51,13 +51,15 @@ public enum Library {
 
 
   public static Library parse(String libraryString) {
+    libraryString = libraryString.toLowerCase();
+
     for(Library library : Library.values()) {
-      if(library.getName().equals(libraryString)) {
+      if(library.getName().toLowerCase().equals(libraryString)) {
         return library;
       }
     }
 
-    if(libraryString.startsWith(Library.ZENTRALBIBLIOTHEK.getName())) {
+    if(libraryString.startsWith(Library.ZENTRALBIBLIOTHEK.getName().toLowerCase())) {
       return Library.ZENTRALBIBLIOTHEK;
     }
 
