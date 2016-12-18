@@ -20,6 +20,8 @@ public class SearchResult {
 
   protected String availabilityIconUrl;
 
+  protected MediaDetails details;
+
 
   public SearchResult() {
 
@@ -72,6 +74,14 @@ public class SearchResult {
 
   public void setAvailabilityIconUrl(String availabilityIconUrl) {
     this.availabilityIconUrl = availabilityIconUrl;
+  }
+
+  public MediaDetails getDetails() {
+    return details;
+  }
+
+  public void setDetails(MediaDetails details) {
+    this.details = details;
   }
 
 
