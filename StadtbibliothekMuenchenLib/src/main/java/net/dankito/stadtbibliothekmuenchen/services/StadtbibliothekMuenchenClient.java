@@ -1,7 +1,9 @@
 package net.dankito.stadtbibliothekmuenchen.services;
 
+import net.dankito.stadtbibliothekmuenchen.model.Library;
 import net.dankito.stadtbibliothekmuenchen.model.MediaBorrow;
 import net.dankito.stadtbibliothekmuenchen.model.MediaBorrows;
+import net.dankito.stadtbibliothekmuenchen.model.MediaCopy;
 import net.dankito.stadtbibliothekmuenchen.model.MediaDetails;
 import net.dankito.stadtbibliothekmuenchen.model.SearchResult;
 import net.dankito.stadtbibliothekmuenchen.model.SearchResults;
@@ -69,6 +71,13 @@ public class StadtbibliothekMuenchenClient {
   protected static final int SEARCH_RESULT_TABLE_DATA_INDEX_AVAILABILITY = 4;
 
   protected static final int SEARCH_RESULT_TABLE_DATA_INDEX_YEAR = 5;
+
+
+  protected static final String MEDIA_AVAILABILITY_ICON_URL_AVAILABLE = "https://ssl.muenchen.de/aDISWeb/icons/verfu_ja.gif";
+
+  protected static final String MEDIA_AVAILABILITY_ICON_URL_NOT_AVAILABLE = "https://ssl.muenchen.de/aDISWeb/icons/verfu_nein.gif";
+
+  protected static final String MEDIA_AVAILABILITY_ICON_URL_INFO = "https://ssl.muenchen.de/aDISWeb/icons/verfu_info.gif";
 
 
   public static final int DOWNLOAD_CONNECTION_TIMEOUT_MILLIS = 2000;
@@ -724,11 +733,22 @@ public class StadtbibliothekMuenchenClient {
       searchResult.setMediaInfo(details.getTitle());
       searchResult.setMediaTypeIconUrl(details.getMediaTypeIconUrl());
       searchResult.setYear(details.getYear());
+      searchResult.setAvailabilityIconUrl(getAvailabilityIconUrlFromCopies(details));
 
       searchResults.addSearchResult(searchResult);
     }
 
     callback.completed(new SimpleSearchResponse(searchTerm, searchResults));
+  }
+
+  protected String getAvailabilityIconUrlFromCopies(MediaDetails details) {
+    for(MediaCopy copy : details.getCopies()) {
+      if(copy.isAvailable()) {
+        return MEDIA_AVAILABILITY_ICON_URL_AVAILABLE;
+      }
+    }
+
+    return MEDIA_AVAILABILITY_ICON_URL_NOT_AVAILABLE;
   }
 
 
@@ -751,6 +771,8 @@ public class StadtbibliothekMuenchenClient {
           parsePublishedMediaDetails(details, tableRow.child(1));
         }
       }
+
+      parseMediaCopies(details, document);
 
       return details;
     }
@@ -788,6 +810,35 @@ public class StadtbibliothekMuenchenClient {
         }
       }
     }
+  }
+
+  protected void parseMediaCopies(MediaDetails details, Document document) {
+    Element mediaCopiesTableElement = document.body().select("table.rTable_table").first();
+
+    if(mediaCopiesTableElement != null) {
+      for(Element tableRow : mediaCopiesTableElement.select("tbody tr")) {
+        MediaCopy copy = parseMediaCopyTableRow(tableRow);
+        if(copy != null) {
+          details.addCopy(copy);
+        }
+      }
+    }
+  }
+
+  protected MediaCopy parseMediaCopyTableRow(Element mediaCopyTableRow) {
+    if(mediaCopyTableRow.children().size() == 5) {
+      MediaCopy copy = new MediaCopy();
+
+      copy.setLibrary(Library.parse(mediaCopyTableRow.child(0).text().trim()));
+      copy.setLocation(mediaCopyTableRow.child(1).text().trim());
+      copy.setShelfmark(mediaCopyTableRow.child(2).text().trim());
+      copy.setLendingPeriod(mediaCopyTableRow.child(3).text().trim());
+      copy.setAvailability(mediaCopyTableRow.child(4).text().trim());
+
+      return copy;
+    }
+
+    return null;
   }
 
 
