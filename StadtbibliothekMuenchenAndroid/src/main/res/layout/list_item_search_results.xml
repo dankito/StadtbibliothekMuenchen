@@ -28,12 +28,22 @@
     />
 
     <ImageView
+        android:id="@+id/imgvwAvailableInFavoriteLibraryIcon"
+        android:layout_width="@dimen/list_item_search_results_icons_width"
+        android:layout_height="@dimen/list_item_search_results_available_in_favorite_library_icon_height"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+    />
+
+    <ImageView
         android:id="@+id/imgvwAvailabilityIcon"
         android:layout_width="@dimen/list_item_search_results_icons_width"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/imgvwAvailableInFavoriteLibraryIcon"
         android:layout_above="@+id/txtvwYear"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
     />
 
     <TextView
@@ -42,7 +52,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="6dp"
+        android:layout_marginBottom="4dp"
+        android:text="2016"
     />
 
 </RelativeLayout>

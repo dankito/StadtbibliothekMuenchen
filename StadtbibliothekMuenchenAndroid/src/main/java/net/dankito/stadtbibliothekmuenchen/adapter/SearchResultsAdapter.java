@@ -10,8 +10,17 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import net.dankito.stadtbibliothekmuenchen.R;
+import net.dankito.stadtbibliothekmuenchen.model.Library;
+import net.dankito.stadtbibliothekmuenchen.model.MediaCopy;
+import net.dankito.stadtbibliothekmuenchen.model.MediaDetails;
 import net.dankito.stadtbibliothekmuenchen.model.SearchResult;
 import net.dankito.stadtbibliothekmuenchen.model.SearchResults;
+import net.dankito.stadtbibliothekmuenchen.model.UserSettings;
+import net.dankito.stadtbibliothekmuenchen.services.StadtbibliothekMuenchenClient;
+import net.dankito.stadtbibliothekmuenchen.util.web.callbacks.GetMediaDetailsCallback;
+import net.dankito.stadtbibliothekmuenchen.util.web.responses.GetMediaDetailsResult;
+
+import java.util.List;
 
 /**
  * Created by ganymed on 25/11/16.
@@ -23,9 +32,15 @@ public class SearchResultsAdapter extends BaseAdapter {
 
   protected SearchResults searchResults;
 
+  protected StadtbibliothekMuenchenClient stadtbibliothekMuenchenClient;
 
-  public SearchResultsAdapter(Activity activity) {
+  protected UserSettings userSettings;
+
+
+  public SearchResultsAdapter(Activity activity, StadtbibliothekMuenchenClient stadtbibliothekMuenchenClient, UserSettings userSettings) {
     this.activity = activity;
+    this.stadtbibliothekMuenchenClient = stadtbibliothekMuenchenClient;
+    this.userSettings = userSettings;
   }
 
 
@@ -71,6 +86,7 @@ public class SearchResultsAdapter extends BaseAdapter {
     }
 
     SearchResult searchResult = (SearchResult) getItem(index);
+    convertView.setTag(searchResult);
 
     TextView txtvwSearchResultMediaInfo = (TextView)convertView.findViewById(R.id.txtvwSearchResultMediaInfo);
     txtvwSearchResultMediaInfo.setText(searchResult.getMediaInfo());
@@ -88,7 +104,69 @@ public class SearchResultsAdapter extends BaseAdapter {
         .load(searchResult.getAvailabilityIconUrl())
         .into(imgvwAvailabilityIcon);
 
+    adjustViewToUserSettings(searchResult, convertView);
+
     return convertView;
+  }
+
+  protected void adjustViewToUserSettings(SearchResult searchResult, View convertView) {
+    ImageView imgvwAvailableInFavoriteLibraryIcon = (ImageView)convertView.findViewById(R.id.imgvwAvailableInFavoriteLibraryIcon);
+
+    if(userSettings.areFavoriteLibrariesSet() == false) {
+      imgvwAvailableInFavoriteLibraryIcon.setVisibility(View.INVISIBLE);
+    }
+    else {
+      if(searchResult.getDetails() != null) {
+        setMediaAvailableInFavoriteLibraryIcon(searchResult.getDetails(), imgvwAvailableInFavoriteLibraryIcon);
+      }
+      else {
+        imgvwAvailableInFavoriteLibraryIcon.setVisibility(View.INVISIBLE);
+
+        if(searchResult.isAvailable()) {
+          getMediaDetails(searchResult, convertView);
+        }
+      }
+    }
+  }
+
+  protected void setMediaAvailableInFavoriteLibraryIcon(MediaDetails details, ImageView imgvwAvailableInFavoriteLibraryIcon) {
+    imgvwAvailableInFavoriteLibraryIcon.setVisibility(View.VISIBLE);
+    List<Library> favoriteLibraries = userSettings.getFavoriteLibraries();
+
+    for(MediaCopy copy : details.getCopies()) {
+      if(favoriteLibraries.contains(copy.getLibrary())) {
+        if(copy.isAvailable()) {
+          imgvwAvailableInFavoriteLibraryIcon.setImageResource(android.R.drawable.checkbox_on_background);
+          return;
+        }
+      }
+    }
+
+    imgvwAvailableInFavoriteLibraryIcon.setImageResource(android.R.drawable.ic_delete);
+  }
+
+  protected void getMediaDetails(SearchResult searchResult, final View convertView) {
+    stadtbibliothekMuenchenClient.getMediaDetailsAsync(searchResult, new GetMediaDetailsCallback() {
+      @Override
+      public void completed(GetMediaDetailsResult result) {
+        if(result.isSuccessful()) {
+          mediaDetailsRetrieved(result, convertView);
+        }
+      }
+    });
+  }
+
+  protected void mediaDetailsRetrieved(final GetMediaDetailsResult result, final View convertView) {
+    activity.runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        SearchResult searchResult = result.getSearchResult();
+
+        if(searchResult == convertView.getTag()) {
+          adjustViewToUserSettings(searchResult, convertView);
+        }
+      }
+    });
   }
 
 }

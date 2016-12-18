@@ -19,6 +19,7 @@ import net.dankito.stadtbibliothekmuenchen.R;
 import net.dankito.stadtbibliothekmuenchen.StadtbibliothekMuenchenApplication;
 import net.dankito.stadtbibliothekmuenchen.adapter.SearchResultsAdapter;
 import net.dankito.stadtbibliothekmuenchen.model.SearchResults;
+import net.dankito.stadtbibliothekmuenchen.model.UserSettings;
 import net.dankito.stadtbibliothekmuenchen.services.StadtbibliothekMuenchenClient;
 import net.dankito.stadtbibliothekmuenchen.util.AlertHelper;
 import net.dankito.stadtbibliothekmuenchen.util.web.callbacks.SimpleSearchCallback;
@@ -34,6 +35,9 @@ public class TabSearchFragment extends Fragment {
 
   @Inject
   protected StadtbibliothekMuenchenClient stadtbibliothekMuenchenClient;
+
+  @Inject
+  protected UserSettings userSettings;
 
   protected SearchResultsAdapter searchResultsAdapter;
 
@@ -52,7 +56,7 @@ public class TabSearchFragment extends Fragment {
 
     View view = inflater.inflate(R.layout.fragment_tab_search, container, false);
 
-    searchResultsAdapter = new SearchResultsAdapter(getActivity());
+    searchResultsAdapter = new SearchResultsAdapter(getActivity(), stadtbibliothekMuenchenClient, userSettings);
 
     ListView lstvwSearchResults = (ListView)view.findViewById(R.id.lstvwSearchResults);
     lstvwSearchResults.setAdapter(searchResultsAdapter);
