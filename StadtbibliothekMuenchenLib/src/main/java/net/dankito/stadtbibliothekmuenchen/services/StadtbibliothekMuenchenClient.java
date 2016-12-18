@@ -2,6 +2,7 @@ package net.dankito.stadtbibliothekmuenchen.services;
 
 import net.dankito.stadtbibliothekmuenchen.model.MediaBorrow;
 import net.dankito.stadtbibliothekmuenchen.model.MediaBorrows;
+import net.dankito.stadtbibliothekmuenchen.model.MediaDetails;
 import net.dankito.stadtbibliothekmuenchen.model.SearchResult;
 import net.dankito.stadtbibliothekmuenchen.model.SearchResults;
 import net.dankito.stadtbibliothekmuenchen.model.UserSettings;
@@ -714,7 +715,79 @@ public class StadtbibliothekMuenchenClient {
 
 
   protected void parseVollanzeigeKatalogSearchResult(String searchTerm, Document document, SimpleSearchCallback callback) {
-    // TODO
+    MediaDetails details = parseMediaDetailsPage(document);
+    SearchResults searchResults = new SearchResults();
+
+    if(details != null) {
+      SearchResult searchResult = new SearchResult();
+
+      searchResult.setMediaInfo(details.getTitle());
+      searchResult.setMediaTypeIconUrl(details.getMediaTypeIconUrl());
+      searchResult.setYear(details.getYear());
+
+      searchResults.addSearchResult(searchResult);
+    }
+
+    callback.completed(new SimpleSearchResponse(searchTerm, searchResults));
+  }
+
+
+  protected MediaDetails parseMediaDetailsPage(Document document) {
+    Element detailsTableElement = document.body().select("table.gi").first();
+
+    if(detailsTableElement != null) {
+      MediaDetails details = new MediaDetails();
+
+      for(Element tableRow : detailsTableElement.select("tbody tr")) {
+        String detailName = tableRow.children().size() < 2 ? "" : tableRow.child(0).text().trim();
+
+        if("Medienart".equals(detailName)) {
+          parseMediaTypeMediaDetails(details, tableRow.child(1));
+        }
+        else if("Titel".equals(detailName)) {
+          details.setTitle(tableRow.child(1).text().trim());
+        }
+        else if("erschienen".equals(detailName)) {
+          parsePublishedMediaDetails(details, tableRow.child(1));
+        }
+      }
+
+      return details;
+    }
+
+    return null;
+  }
+
+  protected void parseMediaTypeMediaDetails(MediaDetails details, Element rightColumn) {
+    Element iconElement = rightColumn.select("img").first();
+
+    if(iconElement != null) {
+      details.setMediaTypeIconUrl(makeLinkAbsolute(iconElement.attr("src")));
+    }
+  }
+
+  protected void parsePublishedMediaDetails(MediaDetails details, Element rightColumn) {
+    String publishedString = rightColumn.text().trim();
+
+    int indexOfClosingSquareBracket = publishedString.lastIndexOf(']');
+    if(indexOfClosingSquareBracket > 0) { // the year in square brackets
+      int indexOfOpeningSquareBracket = publishedString.lastIndexOf('[', indexOfClosingSquareBracket - 1);
+      if(indexOfOpeningSquareBracket >= 0) {
+        String year = publishedString.substring(indexOfOpeningSquareBracket + 1, indexOfClosingSquareBracket);
+        if(year != null && year.length() == 4) {
+          details.setYear(year);
+        }
+      }
+    }
+    else { // the year separated by comma
+      int indexOfLastComma = publishedString.lastIndexOf(',');
+      if(indexOfLastComma > 0) {
+        String year = publishedString.substring(indexOfLastComma).trim();
+        if(year != null && year.length() == 4) {
+          details.setYear(year);
+        }
+      }
+    }
   }
 
 
