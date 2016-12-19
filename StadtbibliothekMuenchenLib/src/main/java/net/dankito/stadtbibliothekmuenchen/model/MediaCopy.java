@@ -17,6 +17,14 @@ public class MediaCopy {
   protected String availability;
 
 
+  public String getLibraryName() {
+    if(getLibrary() != null) {
+      return getLibrary().getName();
+    }
+
+    return "";
+  }
+
   public Library getLibrary() {
     return library;
   }
