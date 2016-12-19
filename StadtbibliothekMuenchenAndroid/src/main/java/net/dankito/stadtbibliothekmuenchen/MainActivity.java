@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
 
   protected void showSettingsDialog() {
-    Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+    Intent intent = new Intent(this, SettingsActivity.class);
     startActivity(intent);
   }
 

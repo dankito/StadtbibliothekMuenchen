@@ -2,6 +2,7 @@ package net.dankito.stadtbibliothekmuenchen.fragments;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -13,16 +14,23 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import net.dankito.stadtbibliothekmuenchen.R;
 import net.dankito.stadtbibliothekmuenchen.StadtbibliothekMuenchenApplication;
+import net.dankito.stadtbibliothekmuenchen.activities.MediaDetailsActivity;
 import net.dankito.stadtbibliothekmuenchen.adapter.SearchResultsAdapter;
+import net.dankito.stadtbibliothekmuenchen.model.SearchResult;
 import net.dankito.stadtbibliothekmuenchen.model.SearchResults;
 import net.dankito.stadtbibliothekmuenchen.model.UserSettings;
 import net.dankito.stadtbibliothekmuenchen.services.StadtbibliothekMuenchenClient;
 import net.dankito.stadtbibliothekmuenchen.util.AlertHelper;
+import net.dankito.stadtbibliothekmuenchen.util.web.callbacks.GetMediaDetailsCallback;
 import net.dankito.stadtbibliothekmuenchen.util.web.callbacks.SimpleSearchCallback;
+import net.dankito.stadtbibliothekmuenchen.util.web.responses.GetMediaDetailsResult;
 import net.dankito.stadtbibliothekmuenchen.util.web.responses.SimpleSearchResponse;
 
 import javax.inject.Inject;
@@ -43,6 +51,8 @@ public class TabSearchFragment extends Fragment {
 
   protected SearchView searchView;
 
+  protected ObjectMapper mapper = new ObjectMapper();
+
 
   public TabSearchFragment() {
     setHasOptionsMenu(true);
@@ -59,6 +69,7 @@ public class TabSearchFragment extends Fragment {
     searchResultsAdapter = new SearchResultsAdapter(getActivity(), stadtbibliothekMuenchenClient, userSettings);
 
     ListView lstvwSearchResults = (ListView)view.findViewById(R.id.lstvwSearchResults);
+    lstvwSearchResults.setOnItemClickListener(lstvwSearchResultsItemClickListener);
     lstvwSearchResults.setAdapter(searchResultsAdapter);
 
     FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fabSearch);
@@ -123,6 +134,52 @@ public class TabSearchFragment extends Fragment {
 
   protected void searchResultRetrieved(SearchResults searchResults) {
     searchResultsAdapter.setSearchResultsThreadSafe(searchResults);
+  }
+
+
+  protected AdapterView.OnItemClickListener lstvwSearchResultsItemClickListener = new AdapterView.OnItemClickListener() {
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int index, long id) {
+      SearchResult searchResult = (SearchResult)view.getTag();
+      showMediaDetails(searchResult);
+    }
+  };
+
+  protected void showMediaDetails(final SearchResult searchResult) {
+    if(searchResult.getDetails() != null) {
+      navigateToMediaDetailsActivity(searchResult);
+    }
+    else {
+      stadtbibliothekMuenchenClient.getMediaDetailsAsync(searchResult, new GetMediaDetailsCallback() {
+        @Override
+        public void completed(GetMediaDetailsResult result) {
+          if(result.isSuccessful() == false) {
+            showErrorMessageThreadSafe(result.getError(), "");
+          }
+          else {
+            getActivity().runOnUiThread(new Runnable() {
+              @Override
+              public void run() {
+                navigateToMediaDetailsActivity(searchResult);
+              }
+            });
+          }
+        }
+      });
+    }
+  }
+
+  protected void navigateToMediaDetailsActivity(SearchResult searchResult) {
+    try {
+      Intent intent = new Intent(getActivity(), MediaDetailsActivity.class);
+
+      String mediaDetailsJson = mapper.writeValueAsString(searchResult.getDetails());
+      intent.putExtra(MediaDetailsActivity.MEDIA_DETAILS_KEY, mediaDetailsJson);
+
+      startActivity(intent);
+    } catch(Exception e) {
+      // TODO: show error message (but should never occur)
+    }
   }
 
 
