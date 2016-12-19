@@ -37,8 +37,6 @@
             android:theme="@style/AppTheme.NoActionBar"
         />
 
-        <receiver android:name=".services.AlarmManagerCronService" />
-
         <receiver android:name=".services.ExpirationsCheckerAndNotifier"
                   android:enabled="true">
             <intent-filter>
