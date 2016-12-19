@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/list_item_media_copy_height"
+                android:layout_margin="6dp"
+>
+
+    <TextView
+        android:id="@+id/txtvwMediaCopyLibraryLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/txtvwMediaCopyShelfMark"
+        android:layout_above="@+id/txtvwMediaCopyAvailability"
+        android:layout_marginRight="6dp"
+        android:gravity="center_vertical"
+        style="@android:style/TextAppearance.Small"
+    />
+
+    <TextView
+        android:id="@+id/txtvwMediaCopyShelfMark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignBottom="@+id/txtvwMediaCopyLibraryLocation"
+        android:gravity="center_vertical|right"
+        style="@android:style/TextAppearance.Small"
+    />
+
+    <TextView
+        android:id="@+id/txtvwMediaCopyLendingPeriod"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/list_item_media_copy_text_view_height"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_vertical|left"
+        style="@android:style/TextAppearance.Small"
+    />
+
+    <TextView
+        android:id="@+id/txtvwMediaCopyAvailability"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/list_item_media_copy_text_view_height"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/txtvwMediaCopyLendingPeriod"
+        android:layout_marginLeft="6dp"
+        android:gravity="center_vertical|right"
+        style="@android:style/TextAppearance.Small"
+    />
+
+</RelativeLayout>
